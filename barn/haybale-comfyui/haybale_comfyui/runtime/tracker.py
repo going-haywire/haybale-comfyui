@@ -62,6 +62,11 @@ class RunTracker:
     error: dict | None = None
     #: ComfyUI started executing the prompt (it left the queue).
     started: bool = False
+    #: Node id → (value, max, state) from the latest ``progress_state``; state is
+    #: ``running`` or ``finished``.
+    node_states: dict[str, tuple[float, float, str]] = field(default_factory=dict)
+    #: Bumped by every message that changes what a progress display shows.
+    revision: int = 0
     _current_prompt: str | None = None
     _current_node: str | None = None
     _pending: list[bytes] = field(default_factory=list)
@@ -69,6 +74,26 @@ class RunTracker:
     @property
     def done(self) -> bool:
         return self.outcome is not Outcome.RUNNING
+
+    @property
+    def running_node(self) -> str | None:
+        """The node ComfyUI is executing for this prompt, if any."""
+        return self._current_node if self._current_prompt == self.prompt_id else None
+
+    def fraction(self, total_nodes: int) -> float:
+        """Share of the run done, counting each of *total_nodes* nodes to execute equally.
+
+        A running node counts by its own progress (a sampler by its steps).
+        """
+        if total_nodes <= 0:
+            return 0.0
+        done = 0.0
+        for value, maximum, state in self.node_states.values():
+            if state == "finished":
+                done += 1.0
+            elif maximum > 0:
+                done += min(value / maximum, 1.0)
+        return min(done / total_nodes, 1.0)
 
     def feed(self, message: str | bytes) -> None:
         """Take one websocket message, text or binary."""
@@ -92,14 +117,23 @@ class RunTracker:
             return
         if kind == "execution_start":
             self.started = True
+            self.revision += 1
         elif kind == "executing":
             self._flush_unnamed()
             self._current_prompt = self.prompt_id
             self._current_node = data.get("node")
+            self.revision += 1
         elif kind == "execution_cached":
             self.cached_nodes = [str(n) for n in data.get("nodes", [])]
         elif kind == "progress":
             self.progress = Progress(str(data.get("node")), int(data["value"]), int(data["max"]))
+            self.revision += 1
+        elif kind == "progress_state":
+            self.node_states = {
+                str(nid): (float(st.get("value", 0)), float(st.get("max", 0)), str(st.get("state", "")))
+                for nid, st in (data.get("nodes") or {}).items()
+            }
+            self.revision += 1
         elif kind == "executed":
             self._take_executed(data)
         elif kind == "execution_success":

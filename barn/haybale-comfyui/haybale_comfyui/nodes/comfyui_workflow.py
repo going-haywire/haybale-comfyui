@@ -65,6 +65,34 @@ def combo_options(object_info: dict[str, Any], class_type: str, input_name: str)
     return []
 
 
+def node_titles(prompt: dict[str, Any]) -> dict[str, str]:
+    """Node id → the title ComfyUI shows (``_meta.title``), or its class when it has none."""
+    return {
+        nid: str((node.get("_meta") or {}).get("title") or node.get("class_type") or nid)
+        for nid, node in prompt.items()
+    }
+
+
+def run_progress(tracker: Any, titles: dict[str, str]) -> tuple[float, str]:
+    """The whole run's share done and a label naming the ComfyUI node at work.
+
+    Every node that is not cached counts equally; a running node counts by its own
+    progress, so a sampler fills its share step by step.
+    """
+    if not tracker.started:
+        return 0.0, "queued"
+    total = len([nid for nid in titles if nid not in set(tracker.cached_nodes)])
+    share = tracker.fraction(total)
+    node = tracker.running_node
+    if node is None:
+        return share, "starting"
+    label = titles.get(str(node), str(node))
+    prog = tracker.progress
+    if prog is not None and prog.node == str(node) and prog.max > 1:
+        label = f"{label} {prog.value}/{prog.max}"
+    return share, label
+
+
 class WorkflowSource(NodeSettings):
     """Which published workflow the node runs."""
 
@@ -316,11 +344,11 @@ class ComfyUIWorkflowNode(BaseNode):
 
         cancel = context.cancel.is_set if context.cancel is not None else None
         with self.progress.busy("main", "queued") as span:
+            titles = node_titles(prompt)
 
             def report(tracker: Any) -> None:
-                prog = tracker.progress
-                if prog is not None and prog.max > 0:
-                    span.step(prog.value / prog.max, f"node {prog.node}: {prog.value}/{prog.max}")
+                share, label = run_progress(tracker, titles)
+                span.step(share, label)
 
             try:
                 tracker = self._client().run(prompt, on_progress=report, cancel=cancel)

@@ -231,9 +231,9 @@ class ComfyClient:
                 raise Cancelled(tracker.prompt_id)  # the server did not confirm in time
             if msg is None:
                 continue
-            before = tracker.progress
+            before = tracker.revision
             tracker.feed(msg)
-            if on_progress is not None and stop_by is None and tracker.progress is not before:
+            if on_progress is not None and stop_by is None and tracker.revision != before:
                 on_progress(tracker)
             if tracker.done:
                 break

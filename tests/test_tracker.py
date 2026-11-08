@@ -101,3 +101,23 @@ def test_short_or_foreign_frames_are_dropped(frame: bytes) -> None:
     tracker.feed(frame)
     tracker.feed(json.dumps({"type": "execution_success", "data": {"prompt_id": "p"}}))
     assert tracker.images == {}
+
+
+def test_progress_state_and_running_node() -> None:
+    pid, messages = replay("ws_log.json", "run1")
+    tracker = RunTracker(pid)
+    seen = []
+    for m in messages:
+        tracker.feed(m)
+        seen.append((tracker.running_node, round(tracker.fraction(7), 3)))
+    assert seen[0] == (None, 0.0)
+    shares = [share for _, share in seen]
+    assert shares == sorted(shares)  # never goes back
+    assert shares[-1] == 1.0
+    assert "5" in {node for node, _ in seen}
+
+
+def test_cached_nodes_are_left_out_of_progress_state() -> None:
+    tracker = track(*replay("ws_log.json", "run2_identical"))
+    assert set(tracker.node_states) == {"7"}
+    assert tracker.fraction(1) == 1.0

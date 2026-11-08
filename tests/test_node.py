@@ -164,3 +164,34 @@ def test_live_pick_from_the_directory(graph: Any) -> None:
             assert node.store.workflow_name == name
         finally:
             publisher.withdraw()
+
+
+def test_run_progress_labels_and_share() -> None:
+    from haybale_comfyui.nodes.comfyui_workflow import node_titles, run_progress
+    from haybale_comfyui.runtime.tracker import RunTracker
+    from tests.test_tracker import replay
+
+    pid, messages = replay("ws_log.json", "run1")
+    prompt = {
+        "1": {"class_type": "CheckpointLoaderSimple", "_meta": {"title": "Load Checkpoint"}},
+        "2": {"class_type": "CLIPTextEncode"},
+        "3": {"class_type": "CLIPTextEncode"},
+        "4": {"class_type": "EmptyLatentImage"},
+        "5": {"class_type": "KSampler", "_meta": {"title": "KSampler"}},
+        "6": {"class_type": "VAEDecode"},
+        "7": {"class_type": "SaveImageWebsocket"},
+    }
+    titles = node_titles(prompt)
+    tracker = RunTracker(pid)
+    labels, shares = [], []
+    assert run_progress(tracker, titles) == (0.0, "queued")
+    for m in messages:
+        tracker.feed(m)
+        share, label = run_progress(tracker, titles)
+        labels.append(label)
+        shares.append(share)
+    assert "Load Checkpoint" in labels
+    assert "KSampler 3/6" in labels
+    assert "VAEDecode" in labels
+    assert shares == sorted(shares)
+    assert shares[-1] == 1.0
