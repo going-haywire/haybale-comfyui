@@ -5,8 +5,16 @@ A haywire project.
 ## Subscribe
 
 <!-- marketstall:share-url:start -->
+Always the latest (tracks the current branch):
+
 ```sh
-*Subscribe URL not yet published — push this repo to a git remote, then run `uv run --frozen haywire share --bump patch`.*
+https://github.com/going-haywire/haybale-comfyui/blob/master/marketstall.toml
+```
+
+Frozen to this version:
+
+```sh
+https://github.com/going-haywire/haybale-comfyui/blob/v0.0.1/marketstall.toml
 ```
 <!-- marketstall:share-url:end -->
 

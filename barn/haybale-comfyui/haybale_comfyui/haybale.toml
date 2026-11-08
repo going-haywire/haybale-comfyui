@@ -44,3 +44,5 @@ linked_libraries = ["haybale_image"]
 # since = "0.1.0"
 # reason = "Superseded by haybale-successor."
 # successor = "haybale-successor"
+origin = "https://github.com/going-haywire/haybale-comfyui"
+origin_provider = "github"

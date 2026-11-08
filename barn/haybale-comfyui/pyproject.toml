@@ -18,6 +18,8 @@ dependencies = [
     "haybale-image>=0.3.4",
     "httpx>=0.27",
     "websockets>=13",
+    "numpy",
+    "pillow",
 ]
 
 # The key is the entry-point name (unique within the group; need not match the

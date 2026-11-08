@@ -1,0 +1,17 @@
+# marketstall.toml — share this file's raw URL so others can subscribe to your library feed
+# Run: haywire share   to update this file
+
+[[haybales]]
+name = "haybale-comfyui"
+label = "ComfyUI"
+version = "0.0.1"
+require = "haywire-core>=0.3.4"
+description = "Run ComfyUI workflows on a ComfyUI server"
+source = "pypi"
+install_spec = "haybale-comfyui==0.0.1"
+tags = [ "image", "comfyui", "diffusion", "remote",]
+on_reload = "none"
+linked_libraries = [ "haybale_image",]
+origin = "https://github.com/going-haywire/haybale-comfyui"
+origin_provider = "github"
+

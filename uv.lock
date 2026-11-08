@@ -556,6 +556,8 @@ dependencies = [
     { name = "haybale-image" },
     { name = "haywire-core" },
     { name = "httpx" },
+    { name = "numpy" },
+    { name = "pillow" },
     { name = "websockets" },
 ]
 
@@ -564,6 +566,8 @@ requires-dist = [
     { name = "haybale-image", editable = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-image" },
     { name = "haywire-core", editable = "/home/maybites/Work/going-haywire/haywire-repo/packages/haywire-core" },
     { name = "httpx", specifier = ">=0.27" },
+    { name = "numpy" },
+    { name = "pillow" },
     { name = "websockets", specifier = ">=13" },
 ]
 
