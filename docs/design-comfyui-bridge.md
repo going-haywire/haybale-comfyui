@@ -147,6 +147,30 @@ and one `ETN_KritaOutput` named "Result".
   once with an always-run output. In Option B our output node should declare itself never cached
   (ComfyUI's `IS_CHANGED` hook **[I]**), which removes the problem at the source.
 
+### 3.3 Spike results, part 3: a publish from ComfyUI's own frontend **[V]**
+
+The owner edited a workflow in the browser while `spike/listen_publish.py` was subscribed
+(fixture `spike/fixtures/browser_publish.json`, 7 messages).
+
+- **Subscribe replays**: the first message was the workflow the spike had published *before*
+  this subscription. So a new subscriber gets what is already published and need not wait for
+  an edit.
+- **Publisher**: `{name: "ComfyUI Web", id: <32 hex chars>}`. The id is per browser client
+  (tab); the name is the same for every tab, and **the workflow's file name is not sent**. A
+  picker must key on the publisher id and has no good label: an open point for Option B, whose
+  JS can send the workflow name.
+- **Format**: API format, as `graphToPrompt` produces it, with `_meta.title` (and `cnr_id`, `ver`
+  from the saved file) on each node. **Subgraphs arrive flattened**, with path ids such as
+  `74:62`; ids are strings and must not be parsed as numbers.
+- **Every edit republishes the whole workflow**, also while it is incomplete: one publish had
+  `ETN_KritaOutput` with its required `images` input missing. The node must validate a publish
+  (does every required input exist?) before offering it, and should not rebuild ports on each
+  keystroke: offer the update, as §4.2 already says.
+- **Connection drop**: after a few minutes the websocket closed without a close frame while the
+  server stayed up. Cause not found **[I: idle/ping timeout or a frontend reload]**. The client
+  must reconnect and subscribe again; whether a subscription outlives its websocket is not
+  checked.
+
 ## 4. The haywire node: ComfyUI Workflow
 
 | | |
@@ -261,8 +285,7 @@ Licence and last push checked via the GitHub API on 2026-11-08 **[S]**.
 
 ## 8. Order of small PRs
 
-0. **Spike** (needs a live ComfyUI + comfyui-tooling-nodes). Parts 1 and 2 are done (§3.1,
-   §3.2); left: one publish from ComfyUI's own frontend. Original plan: subscribe, receive one published
+0. **Spike**: done (§3.1–§3.3). Original plan: subscribe, receive one published
    workflow, rewrite one Parameter and one image placeholder, `POST /prompt`, receive progress and
    one PNG frame. Capture every message as a test fixture. Settles the **[I]** and **[S]** marks.
 1. Packaging: dependencies, `haybale.toml`, library settings + panel.

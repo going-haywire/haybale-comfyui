@@ -1,0 +1,646 @@
+[
+ {
+  "type": "etn_workflow_published",
+  "data": {
+   "publisher": {
+    "name": "spike-img2img",
+    "id": "spike-publisher"
+   },
+   "workflow": {
+    "10": {
+     "class_type": "ETN_Parameter",
+     "inputs": {
+      "name": "Prompt",
+      "type": "prompt (positive)",
+      "default": "a green pear"
+     }
+    },
+    "11": {
+     "class_type": "ETN_Parameter",
+     "inputs": {
+      "name": "Strength",
+      "type": "number",
+      "default": "0.6",
+      "min": 0.0,
+      "max": 1.0
+     }
+    },
+    "12": {
+     "class_type": "ETN_Parameter",
+     "inputs": {
+      "name": "Seed",
+      "type": "number (integer)",
+      "default": "1",
+      "min": 0,
+      "max": 2147483648
+     }
+    },
+    "20": {
+     "class_type": "ETN_KritaImageLayer",
+     "inputs": {
+      "name": "Source"
+     }
+    },
+    "1": {
+     "class_type": "CheckpointLoaderSimple",
+     "inputs": {
+      "ckpt_name": "v1-5-pruned-emaonly.safetensors"
+     }
+    },
+    "2": {
+     "class_type": "CLIPTextEncode",
+     "inputs": {
+      "text": [
+       "10",
+       0
+      ],
+      "clip": [
+       "1",
+       1
+      ]
+     }
+    },
+    "3": {
+     "class_type": "CLIPTextEncode",
+     "inputs": {
+      "text": "",
+      "clip": [
+       "1",
+       1
+      ]
+     }
+    },
+    "4": {
+     "class_type": "VAEEncode",
+     "inputs": {
+      "pixels": [
+       "20",
+       0
+      ],
+      "vae": [
+       "1",
+       2
+      ]
+     }
+    },
+    "5": {
+     "class_type": "KSampler",
+     "inputs": {
+      "model": [
+       "1",
+       0
+      ],
+      "positive": [
+       "2",
+       0
+      ],
+      "negative": [
+       "3",
+       0
+      ],
+      "latent_image": [
+       "4",
+       0
+      ],
+      "seed": [
+       "12",
+       0
+      ],
+      "steps": 6,
+      "cfg": 7.0,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "denoise": [
+       "11",
+       0
+      ]
+     }
+    },
+    "6": {
+     "class_type": "VAEDecode",
+     "inputs": {
+      "samples": [
+       "5",
+       0
+      ],
+      "vae": [
+       "1",
+       2
+      ]
+     }
+    },
+    "30": {
+     "class_type": "ETN_KritaOutput",
+     "inputs": {
+      "images": [
+       "6",
+       0
+      ],
+      "x": 0,
+      "y": 0,
+      "name": "Result",
+      "batch_mode": "default",
+      "resize_canvas": false
+     }
+    }
+   }
+  }
+ },
+ {
+  "type": "etn_workflow_published",
+  "data": {
+   "publisher": {
+    "name": "ComfyUI Web",
+    "id": "b3c5faaee10647ed9e76628693bb8867"
+   },
+   "workflow": {
+    "72": {
+     "inputs": {
+      "x": 0,
+      "y": 0,
+      "name": "",
+      "batch_mode": "default",
+      "resize_canvas": false
+     },
+     "class_type": "ETN_KritaOutput",
+     "_meta": {
+      "title": "Krita Output"
+     }
+    }
+   }
+  }
+ },
+ {
+  "type": "etn_workflow_published",
+  "data": {
+   "publisher": {
+    "name": "ComfyUI Web",
+    "id": "b3c5faaee10647ed9e76628693bb8867"
+   },
+   "workflow": {
+    "72": {
+     "inputs": {
+      "x": 0,
+      "y": 0,
+      "name": "",
+      "batch_mode": "default",
+      "resize_canvas": false
+     },
+     "class_type": "ETN_KritaOutput",
+     "_meta": {
+      "title": "Krita Output"
+     }
+    },
+    "73": {
+     "inputs": {
+      "name": "Parameter",
+      "type": "auto",
+      "default": "",
+      "min": -10000000000,
+      "max": 10000000000
+     },
+     "class_type": "ETN_Parameter",
+     "_meta": {
+      "title": "Parameter"
+     }
+    }
+   }
+  }
+ },
+ {
+  "type": "etn_workflow_published",
+  "data": {
+   "publisher": {
+    "name": "ComfyUI Web",
+    "id": "b3c5faaee10647ed9e76628693bb8867"
+   },
+   "workflow": {
+    "72": {
+     "inputs": {
+      "x": 0,
+      "y": 0,
+      "name": "",
+      "batch_mode": "default",
+      "resize_canvas": false
+     },
+     "class_type": "ETN_KritaOutput",
+     "_meta": {
+      "title": "Krita Output"
+     }
+    },
+    "73": {
+     "inputs": {
+      "name": "Parameter",
+      "type": "auto",
+      "default": "",
+      "min": -10000000000,
+      "max": 10000000000
+     },
+     "class_type": "ETN_Parameter",
+     "_meta": {
+      "title": "Parameter"
+     }
+    }
+   }
+  }
+ },
+ {
+  "type": "etn_workflow_published",
+  "data": {
+   "publisher": {
+    "name": "ComfyUI Web",
+    "id": "b3c5faaee10647ed9e76628693bb8867"
+   },
+   "workflow": {
+    "72": {
+     "inputs": {
+      "x": 0,
+      "y": 0,
+      "name": "",
+      "batch_mode": "default",
+      "resize_canvas": false
+     },
+     "class_type": "ETN_KritaOutput",
+     "_meta": {
+      "title": "Krita Output"
+     }
+    },
+    "73": {
+     "inputs": {
+      "name": "Parameter",
+      "type": "auto",
+      "default": "",
+      "min": -10000000000,
+      "max": 10000000000
+     },
+     "class_type": "ETN_Parameter",
+     "_meta": {
+      "title": "Parameter"
+     }
+    },
+    "74:62": {
+     "inputs": {
+      "clip_name": "qwen_3_4b.safetensors",
+      "type": "lumina2",
+      "device": "default"
+     },
+     "class_type": "CLIPLoader",
+     "_meta": {
+      "title": "Load CLIP",
+      "cnr_id": "comfy-core",
+      "ver": "0.3.73"
+     }
+    },
+    "74:63": {
+     "inputs": {
+      "vae_name": "ae.safetensors"
+     },
+     "class_type": "VAELoader",
+     "_meta": {
+      "title": "Load VAE",
+      "cnr_id": "comfy-core",
+      "ver": "0.3.73"
+     }
+    },
+    "74:64": {
+     "inputs": {
+      "conditioning": [
+       "74:67",
+       0
+      ]
+     },
+     "class_type": "ConditioningZeroOut",
+     "_meta": {
+      "title": "Conditioning Zero Out",
+      "cnr_id": "comfy-core",
+      "ver": "0.3.73"
+     }
+    },
+    "74:65": {
+     "inputs": {
+      "samples": [
+       "74:70",
+       0
+      ],
+      "vae": [
+       "74:63",
+       0
+      ]
+     },
+     "class_type": "VAEDecode",
+     "_meta": {
+      "title": "VAE Decode",
+      "cnr_id": "comfy-core",
+      "ver": "0.3.64"
+     }
+    },
+    "74:66": {
+     "inputs": {
+      "unet_name": "z_image_turbo_bf16.safetensors",
+      "weight_dtype": "default"
+     },
+     "class_type": "UNETLoader",
+     "_meta": {
+      "title": "Load Diffusion Model",
+      "cnr_id": "comfy-core",
+      "ver": "0.3.73"
+     }
+    },
+    "74:67": {
+     "inputs": {
+      "text": "",
+      "clip": [
+       "74:62",
+       0
+      ]
+     },
+     "class_type": "CLIPTextEncode",
+     "_meta": {
+      "title": "CLIP Text Encode (Prompt)",
+      "cnr_id": "comfy-core",
+      "ver": "0.3.73"
+     }
+    },
+    "74:68": {
+     "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "batch_size": 1
+     },
+     "class_type": "EmptySD3LatentImage",
+     "_meta": {
+      "title": "EmptySD3LatentImage",
+      "cnr_id": "comfy-core",
+      "ver": "0.3.64"
+     }
+    },
+    "74:69": {
+     "inputs": {
+      "shift": 3,
+      "sampling": "flow",
+      "model": [
+       "74:66",
+       0
+      ]
+     },
+     "class_type": "ModelSamplingAuraFlow",
+     "_meta": {
+      "title": "ModelSamplingAuraFlow",
+      "cnr_id": "comfy-core",
+      "ver": "0.3.64"
+     }
+    },
+    "74:70": {
+     "inputs": {
+      "seed": 0,
+      "steps": 8,
+      "cfg": 1,
+      "sampler_name": "res_multistep",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": [
+       "74:69",
+       0
+      ],
+      "positive": [
+       "74:67",
+       0
+      ],
+      "negative": [
+       "74:64",
+       0
+      ],
+      "latent_image": [
+       "74:68",
+       0
+      ]
+     },
+     "class_type": "KSampler",
+     "_meta": {
+      "title": "KSampler",
+      "cnr_id": "comfy-core",
+      "ver": "0.3.64"
+     }
+    }
+   }
+  }
+ },
+ {
+  "type": "etn_workflow_published",
+  "data": {
+   "publisher": {
+    "name": "ComfyUI Web",
+    "id": "b3c5faaee10647ed9e76628693bb8867"
+   },
+   "workflow": {
+    "72": {
+     "inputs": {
+      "x": 0,
+      "y": 0,
+      "name": "",
+      "batch_mode": "default",
+      "resize_canvas": false
+     },
+     "class_type": "ETN_KritaOutput",
+     "_meta": {
+      "title": "Krita Output"
+     }
+    },
+    "73": {
+     "inputs": {
+      "name": "Parameter",
+      "type": "auto",
+      "default": "",
+      "min": -10000000000,
+      "max": 10000000000
+     },
+     "class_type": "ETN_Parameter",
+     "_meta": {
+      "title": "Parameter"
+     }
+    },
+    "74:62": {
+     "inputs": {
+      "clip_name": "qwen_3_4b.safetensors",
+      "type": "lumina2",
+      "device": "default"
+     },
+     "class_type": "CLIPLoader",
+     "_meta": {
+      "title": "Load CLIP",
+      "cnr_id": "comfy-core",
+      "ver": "0.3.73"
+     }
+    },
+    "74:63": {
+     "inputs": {
+      "vae_name": "ae.safetensors"
+     },
+     "class_type": "VAELoader",
+     "_meta": {
+      "title": "Load VAE",
+      "cnr_id": "comfy-core",
+      "ver": "0.3.73"
+     }
+    },
+    "74:64": {
+     "inputs": {
+      "conditioning": [
+       "74:67",
+       0
+      ]
+     },
+     "class_type": "ConditioningZeroOut",
+     "_meta": {
+      "title": "Conditioning Zero Out",
+      "cnr_id": "comfy-core",
+      "ver": "0.3.73"
+     }
+    },
+    "74:65": {
+     "inputs": {
+      "samples": [
+       "74:70",
+       0
+      ],
+      "vae": [
+       "74:63",
+       0
+      ]
+     },
+     "class_type": "VAEDecode",
+     "_meta": {
+      "title": "VAE Decode",
+      "cnr_id": "comfy-core",
+      "ver": "0.3.64"
+     }
+    },
+    "74:66": {
+     "inputs": {
+      "unet_name": "z_image_turbo_bf16.safetensors",
+      "weight_dtype": "default"
+     },
+     "class_type": "UNETLoader",
+     "_meta": {
+      "title": "Load Diffusion Model",
+      "cnr_id": "comfy-core",
+      "ver": "0.3.73"
+     }
+    },
+    "74:67": {
+     "inputs": {
+      "text": "",
+      "clip": [
+       "74:62",
+       0
+      ]
+     },
+     "class_type": "CLIPTextEncode",
+     "_meta": {
+      "title": "CLIP Text Encode (Prompt)",
+      "cnr_id": "comfy-core",
+      "ver": "0.3.73"
+     }
+    },
+    "74:68": {
+     "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "batch_size": 1
+     },
+     "class_type": "EmptySD3LatentImage",
+     "_meta": {
+      "title": "EmptySD3LatentImage",
+      "cnr_id": "comfy-core",
+      "ver": "0.3.64"
+     }
+    },
+    "74:69": {
+     "inputs": {
+      "shift": 3,
+      "sampling": "flow",
+      "model": [
+       "74:66",
+       0
+      ]
+     },
+     "class_type": "ModelSamplingAuraFlow",
+     "_meta": {
+      "title": "ModelSamplingAuraFlow",
+      "cnr_id": "comfy-core",
+      "ver": "0.3.64"
+     }
+    },
+    "74:70": {
+     "inputs": {
+      "seed": 0,
+      "steps": 8,
+      "cfg": 1,
+      "sampler_name": "res_multistep",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": [
+       "74:69",
+       0
+      ],
+      "positive": [
+       "74:67",
+       0
+      ],
+      "negative": [
+       "74:64",
+       0
+      ],
+      "latent_image": [
+       "74:68",
+       0
+      ]
+     },
+     "class_type": "KSampler",
+     "_meta": {
+      "title": "KSampler",
+      "cnr_id": "comfy-core",
+      "ver": "0.3.64"
+     }
+    }
+   }
+  }
+ },
+ {
+  "type": "etn_workflow_published",
+  "data": {
+   "publisher": {
+    "name": "ComfyUI Web",
+    "id": "b3c5faaee10647ed9e76628693bb8867"
+   },
+   "workflow": {
+    "72": {
+     "inputs": {
+      "x": 0,
+      "y": 0,
+      "name": "",
+      "batch_mode": "default",
+      "resize_canvas": false
+     },
+     "class_type": "ETN_KritaOutput",
+     "_meta": {
+      "title": "Krita Output"
+     }
+    },
+    "73": {
+     "inputs": {
+      "name": "Parameter",
+      "type": "auto",
+      "default": "",
+      "min": -10000000000,
+      "max": 10000000000
+     },
+     "class_type": "ETN_Parameter",
+     "_meta": {
+      "title": "Parameter"
+     }
+    }
+   }
+  }
+ }
+]
