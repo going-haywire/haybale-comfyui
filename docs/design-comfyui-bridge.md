@@ -247,7 +247,7 @@ on graph change when a Haywire Output is present. Estimate about 200 lines of Py
 Written from this description, not from Acly's code. Adds an install step on the server.
 
 **Decided (owner, 2026-11-08): B now**, because of the cache problem of §3.2. The pack lives in
-`../comfyui-haywire` (local repo, GPL-3.0, no remote yet). Its Haywire Output is never cached;
+`../comfyui-haywire` (GPL-3.0, https://github.com/going-haywire/comfyui-haywire). Its Haywire Output is never cached;
 its page hook publishes under the workflow's file name, which also solves the picker label of
 §3.3. Its protocol is documented in that repo's README (protocol version 1, `GET
 /api/haywire/version`). The haywire side describes each pack as a `Pack` in
