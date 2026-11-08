@@ -300,7 +300,9 @@ Licence and last push checked via the GitHub API on 2026-11-08 **[S]**.
    (with `runtime/tracker.py`; live tests run when `COMFYUI_URL` is set).
 3. `runtime/placeholders.py`: the mapping table, placeholder parsing, graph rewrite; pure
    functions, fully tested. **Done.**
-4. **ComfyUI Workflow** node: picker, dynamic ports, store, progress, cancel.
+4. **ComfyUI Workflow** node: picker, dynamic ports, store, progress, cancel. **Done** (`nodes/comfyui_workflow.py`, with
+   `runtime/directory.py`: one background subscriber per server, reconnecting, shared by all
+   nodes; `runtime/images.py`). Not yet tried in the studio UI.
 5. Loading saved files: API format first, then UI format via `/object_info`.
 6. Option B: the `comfyui-haywire` pack (separate GPL-3.0 repo) and the table switch.
 7. Docs and an example graph.

@@ -57,3 +57,23 @@ def library_system(project_root: Path, _isolated_home: Path) -> Iterator[Any]:
     if hasattr(lib_registry, "stop_file_watching"):
         lib_registry.stop_file_watching()
     set_library_system(None)
+
+
+@pytest.fixture
+def graph(library_system: Any) -> Any:
+    """An empty graph on the loaded library system, validating inline."""
+    from haywire.core.graph.base import BaseGraph
+    from haywire.core.graph.scheduler import SyncScheduler
+
+    return BaseGraph(filestem="ComfyUI Test Graph", validation_scheduler=SyncScheduler())
+
+
+def add_node(graph: Any, module: str, name: str) -> Any:
+    """Place the node class *name* from *module* in *graph* and return the node."""
+    import importlib
+
+    cls = getattr(importlib.import_module(module), name)
+    wrapper = graph.create_node_wrapper(cls.class_identity.registry_key, position=(0, 0))
+    assert wrapper is not None, f"node creation failed for {name}"
+    assert isinstance(wrapper.node, cls), "an unknown key yields an ErrorNode"
+    return wrapper.node
