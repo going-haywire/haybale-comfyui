@@ -2,13 +2,37 @@
 name = "haybale-comfyui-dev"
 version = "0.1.0"
 requires-python = ">=3.12"
-dependencies = [ "haywire-studio>=0.3.4", "haybale-studio>=0.3.4", "haybale-marketplace>=0.3.4", "haybale-comfyui",]
+dependencies = [ "haywire-studio>=0.3.4", "haybale-studio>=0.3.4", "haybale-marketplace>=0.3.4", "haybale-comfyui", "haybale-core", "haybale-image",]
 
 [tool.uv.workspace]
 members = [ "barn/*",]
 
 [tool.uv.sources.haybale-comfyui]
 workspace = true
+
+[tool.uv.sources.haywire-studio]
+path = "/home/maybites/Work/going-haywire/haywire-repo/packages/haywire-studio"
+editable = true
+
+[tool.uv.sources.haywire-core]
+path = "/home/maybites/Work/going-haywire/haywire-repo/packages/haywire-core"
+editable = true
+
+[tool.uv.sources.haybale-core]
+path = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-core"
+editable = true
+
+[tool.uv.sources.haybale-studio]
+path = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-studio"
+editable = true
+
+[tool.uv.sources.haybale-marketplace]
+path = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-marketplace"
+editable = true
+
+[tool.uv.sources.haybale-image]
+path = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-image"
+editable = true
 
 [dependency-groups]
 dev = ["pytest>=8", "pytest-timeout", "ruff==0.12.12"]
