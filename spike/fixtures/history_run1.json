@@ -1,0 +1,130 @@
+{
+ "f86358c0-da48-4859-ad27-aad8c278ac00": {
+  "prompt": [
+   0,
+   "f86358c0-da48-4859-ad27-aad8c278ac00",
+   {
+    "1": {
+     "class_type": "CheckpointLoaderSimple",
+     "inputs": {
+      "ckpt_name": "v1-5-pruned-emaonly.safetensors"
+     }
+    },
+    "2": {
+     "class_type": "CLIPTextEncode",
+     "inputs": {
+      "text": "a red apple on a table",
+      "clip": [
+       "1",
+       1
+      ]
+     }
+    },
+    "3": {
+     "class_type": "CLIPTextEncode",
+     "inputs": {
+      "text": "",
+      "clip": [
+       "1",
+       1
+      ]
+     }
+    },
+    "4": {
+     "class_type": "EmptyLatentImage",
+     "inputs": {
+      "width": 512,
+      "height": 512,
+      "batch_size": 1
+     }
+    },
+    "5": {
+     "class_type": "KSampler",
+     "inputs": {
+      "model": [
+       "1",
+       0
+      ],
+      "positive": [
+       "2",
+       0
+      ],
+      "negative": [
+       "3",
+       0
+      ],
+      "latent_image": [
+       "4",
+       0
+      ],
+      "seed": 42,
+      "steps": 6,
+      "cfg": 7.0,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "denoise": 1.0
+     }
+    },
+    "6": {
+     "class_type": "VAEDecode",
+     "inputs": {
+      "samples": [
+       "5",
+       0
+      ],
+      "vae": [
+       "1",
+       2
+      ]
+     }
+    },
+    "7": {
+     "class_type": "SaveImageWebsocket",
+     "inputs": {
+      "images": [
+       "6",
+       0
+      ]
+     }
+    }
+   },
+   {
+    "client_id": "e34c4ad1-5cdf-49bf-a193-abc7d699bb5d",
+    "create_time": 1794171406510
+   },
+   [
+    "7"
+   ]
+  ],
+  "outputs": {},
+  "status": {
+   "status_str": "success",
+   "completed": true,
+   "messages": [
+    [
+     "execution_start",
+     {
+      "prompt_id": "f86358c0-da48-4859-ad27-aad8c278ac00",
+      "timestamp": 1794171406511
+     }
+    ],
+    [
+     "execution_cached",
+     {
+      "nodes": [],
+      "prompt_id": "f86358c0-da48-4859-ad27-aad8c278ac00",
+      "timestamp": 1794171406513
+     }
+    ],
+    [
+     "execution_success",
+     {
+      "prompt_id": "f86358c0-da48-4859-ad27-aad8c278ac00",
+      "timestamp": 1794171412537
+     }
+    ]
+   ]
+  },
+  "meta": {}
+ }
+}

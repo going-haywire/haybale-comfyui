@@ -86,10 +86,34 @@ or `error` + `node_errors`), `GET /history/{prompt_id}`, `GET /view`, `POST /upl
 WebSocket `/ws` with messages `status`, `execution_start`, `execution_cached`, `executing`,
 `progress`, `executed`. The docs list routes but give no payload fields and no auth description.
 
-Payload shapes (client_id in the websocket URL and in the prompt body, `progress` carrying
-value/max, `prompt_id` on progress messages) are **[I]** until the spike captures them.
-
 Plus the exchange routes of §2.1 (Option A) or our own (Option B, §5).
+
+### 3.1 Spike results, part 1: the core protocol **[V]**
+
+Run 2026-11-08 against the owner's local server (ComfyUI 0.44.0, torch 2.14.1+cu126, one
+GTX 1080 Ti) with a 6-step SD1.5 workflow ending in `SaveImageWebsocket`. Scripts and captured
+messages: `spike/` (`spike_core.py`, `spike_err.py`, `fixtures/*.json`).
+
+- **Connect**: `ws://host/ws?clientId=<uuid>`; the first message is `status` with `sid` (= our id).
+- **Submit**: `POST /prompt {prompt, client_id}` → 200 `{prompt_id, number, node_errors: {}}`.
+  A validation failure → **400** `{error: {type, message, …}, node_errors: {<node id>: {errors:
+  [{type, message, details, extra_info: {input_name, received_value, …}}], dependent_outputs,
+  class_type}}}`: enough to name the bad input on the card.
+- **Messages per run**, in order: `execution_start`, `execution_cached {nodes: [...]}`, then per
+  node `executing {node, display_node, prompt_id}` and many `progress_state {prompt_id, nodes:
+  {id: {value, max, state}}}`; the sampler sends `progress {value, max, prompt_id, node}`; the
+  run ends with **`execution_success`** (plus a trailing `executing {node: null}`). Every message
+  carries `prompt_id`. `progress_state` and `execution_success` are newer than the v1 route list.
+- **Images**: `SaveImageWebsocket` sends a binary frame `>II (1, 2)` + PNG bytes (512×512 RGB,
+  ~360 kB), with **no `executed` message after it**; it arrives between `executing` for the save
+  node and `execution_success` of the same prompt. `/history/{id}` has empty `outputs` for it.
+  `SaveImageWebsocket` is not core: it is `custom_nodes/websocket_image_save.py`, an example node
+  tracked in ComfyUI's own repo, so it is present on a git install but can be removed.
+- **Caching**: an identical second prompt reports nodes 1–6 in `execution_cached` and finishes in
+  ~40 ms, but the websocket save node **runs again and resends the image**. So the cache question
+  of §9 is settled for this output node; still to check for Acly's output node.
+- **Cancel**: `POST /interrupt {prompt_id}` → 200; the run ends with `execution_interrupted
+  {prompt_id, node_id, node_type, executed}` and no image.
 
 ## 4. The haywire node: ComfyUI Workflow
 
@@ -205,7 +229,8 @@ Licence and last push checked via the GitHub API on 2026-11-08 **[S]**.
 
 ## 8. Order of small PRs
 
-0. **Spike** (needs a live ComfyUI + comfyui-tooling-nodes): subscribe, receive one published
+0. **Spike** (needs a live ComfyUI + comfyui-tooling-nodes). Part 1, the core protocol, is done
+   (§3.1); part 2 needs the tooling nodes installed: subscribe, receive one published
    workflow, rewrite one Parameter and one image placeholder, `POST /prompt`, receive progress and
    one PNG frame. Capture every message as a test fixture. Settles the **[I]** and **[S]** marks.
 1. Packaging: dependencies, `haybale.toml`, library settings + panel.
@@ -221,12 +246,12 @@ Licence and last push checked via the GitHub API on 2026-11-08 **[S]**.
 
 - **Concurrency**: one server, several haywire nodes (or graphs). One websocket per node, or one
   shared client per server URL that routes messages? A shared client is likely needed **[I]**.
-- **Routing images by `prompt_id`**: binary frames carry no prompt id; they are matched by the
-  `executed` message that follows **[S]**. Is that safe with two prompts in flight on one socket,
-  or does it force one prompt at a time per client id?
-- **ComfyUI input caching**: an identical prompt returns at once with `execution_cached` and may
-  send **no** image frames **[I]**. The node must either keep its last images (cache) or force a
-  re-send; to be seen in the spike.
+- **Routing images by `prompt_id`**: binary frames carry no prompt id. With `SaveImageWebsocket`
+  no `executed` follows (§3.1); a frame belongs to the prompt of the last `executing` message.
+  That holds as long as the server runs one prompt at a time **[I: ComfyUI's single queue
+  worker]**; the output name per frame (several outputs) needs Acly's info dict or our own.
+- **ComfyUI input caching**: settled for `SaveImageWebsocket` (it re-sends, §3.1); still to check
+  for `ETN_KritaOutput`.
 - **Auth**: which header? A plain ComfyUI has none; reverse proxies use `Authorization: Bearer …`
   or basic auth **[I]**. The setting holds a full header value; the header name may need a field.
 - **ComfyUI version pinning**: minimum ComfyUI and tooling-nodes / comfyui-haywire versions; how

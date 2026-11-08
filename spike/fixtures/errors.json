@@ -1,0 +1,124 @@
+{
+ "bad_ckpt": {
+  "status": 400,
+  "body": {
+   "error": {
+    "type": "prompt_outputs_failed_validation",
+    "message": "Prompt outputs failed validation",
+    "details": "",
+    "extra_info": {}
+   },
+   "node_errors": {
+    "1": {
+     "errors": [
+      {
+       "type": "value_not_in_list",
+       "message": "Value not in list",
+       "details": "ckpt_name: 'missing.safetensors' not in ['RealVisXL_V5.0_fp16.safetensors', 'sd_xl_base_1.0.safetensors', 'v1-5-pruned-emaonly.safetensors']",
+       "extra_info": {
+        "input_name": "ckpt_name",
+        "input_config": [
+         [
+          "RealVisXL_V5.0_fp16.safetensors",
+          "sd_xl_base_1.0.safetensors",
+          "v1-5-pruned-emaonly.safetensors"
+         ],
+         {
+          "tooltip": "The name of the checkpoint (model) to load."
+         }
+        ],
+        "received_value": "missing.safetensors"
+       }
+      }
+     ],
+     "dependent_outputs": [
+      "7"
+     ],
+     "class_type": "CheckpointLoaderSimple"
+    }
+   }
+  }
+ },
+ "interrupt": [
+  {
+   "type": "status",
+   "data": {
+    "status": {
+     "exec_info": {
+      "queue_remaining": 1
+     }
+    }
+   }
+  },
+  {
+   "type": "status",
+   "data": {
+    "status": {
+     "exec_info": {
+      "queue_remaining": 1
+     }
+    }
+   }
+  },
+  {
+   "type": "execution_start",
+   "data": {
+    "prompt_id": "701ce8a2-f077-48e0-a730-02023d4d3d89",
+    "timestamp": 1794171433631
+   }
+  },
+  {
+   "type": "execution_cached",
+   "data": {
+    "nodes": [
+     "1",
+     "2",
+     "3",
+     "4"
+    ],
+    "prompt_id": "701ce8a2-f077-48e0-a730-02023d4d3d89",
+    "timestamp": 1794171433632
+   }
+  },
+  {
+   "type": "executing",
+   "data": {
+    "node": "5",
+    "display_node": "5",
+    "prompt_id": "701ce8a2-f077-48e0-a730-02023d4d3d89"
+   }
+  },
+  {
+   "type": "progress",
+   "data": {
+    "value": 1,
+    "max": 6,
+    "prompt_id": "701ce8a2-f077-48e0-a730-02023d4d3d89",
+    "node": "5"
+   }
+  },
+  {
+   "type": "progress",
+   "data": {
+    "value": 2,
+    "max": 6,
+    "prompt_id": "701ce8a2-f077-48e0-a730-02023d4d3d89",
+    "node": "5"
+   }
+  },
+  {
+   "interrupt_status": 200,
+   "body": ""
+  },
+  {
+   "type": "execution_interrupted",
+   "data": {
+    "prompt_id": "701ce8a2-f077-48e0-a730-02023d4d3d89",
+    "node_id": "5",
+    "node_type": "KSampler",
+    "executed": [],
+    "timestamp": 1794171434473
+   }
+  }
+ ]
+}
