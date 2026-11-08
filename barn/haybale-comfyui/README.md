@@ -10,7 +10,7 @@ https://github.com/going-haywire/haybale-comfyui/blob/master/marketstall.toml
 Frozen to this version:
 
 ```sh
-https://github.com/going-haywire/haybale-comfyui/blob/v0.0.1/marketstall.toml
+https://github.com/going-haywire/haybale-comfyui/blob/v0.0.2/marketstall.toml
 ```
 <!-- marketstall:share-url:end -->
 

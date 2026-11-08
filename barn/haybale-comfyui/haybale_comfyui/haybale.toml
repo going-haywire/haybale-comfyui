@@ -7,7 +7,7 @@ name = "haybale-comfyui"  # pip distribution name; also prefixes every
 # component's registry key, e.g. haybale-comfyui:node:Add
 
 # ── written by scripts/bump_version.py / the share wizard, not by hand ──────
-version = "0.0.1"  # PEP 440, no "v" — canon here; pyproject.toml carries the synced copy
+version = "0.0.2"  # PEP 440, no "v" — canon here; pyproject.toml carries the synced copy
 
 # ── display ───────────────────────────────────────────────────────────────
 label = "ComfyUI"  # human display name

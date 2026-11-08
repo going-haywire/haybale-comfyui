@@ -6,7 +6,7 @@ description = "Run ComfyUI workflows on a ComfyUI server"  # from haybale.descri
 keywords = ["image", "comfyui", "diffusion", "remote"]  # from haybale.tags
 
 # CANON, but owned by the release machinery — synced to haybale.toml
-version = "0.0.1"
+version = "0.0.2"
 
 # ── authored here ────────────────────────────────────────────────────────────
 requires-python = ">=3.12"

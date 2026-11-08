@@ -1,4 +1,4 @@
-# haybale-comfyui — component index (v0.0.1)
+# haybale-comfyui — component index (v0.0.2)
 
 ## node
 - `haybale-comfyui:node:ComfyUIWorkflowNode` — ComfyUI Workflow — Runs a workflow on a ComfyUI server and returns its images  _tags: comfyui, comfy, workflow, diffusion, stable diffusion, generate, remote_
