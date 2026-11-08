@@ -167,6 +167,10 @@ class ComfyClient:
     def unsubscribe(self, pack: Pack = HAYWIRE) -> None:
         self._json("POST", f"{pack.exchange_prefix}/unsubscribe", json={"client_id": self.client_id})
 
+    def withdraw(self, pack: Pack = HAYWIRE) -> None:
+        """Remove this client's published workflow (comfyui-haywire only)."""
+        self._json("POST", f"{pack.exchange_prefix}/withdraw", json={"client_id": self.client_id})
+
     def publish(self, name: str, workflow: dict[str, Any], pack: Pack = HAYWIRE) -> None:
         """Publish a workflow under this client's id (tests and tools; ComfyUI's page does it too)."""
         body = {"name": name, "client_id": self.client_id, "workflow": workflow}

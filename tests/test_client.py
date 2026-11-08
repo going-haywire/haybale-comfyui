@@ -85,6 +85,8 @@ def test_live_exchange_replays_to_a_new_subscriber(pack: Pack) -> None:
             found = subscriber.wait_published(timeout=2.0, pack=pack)
         finally:
             subscriber.unsubscribe(pack)
+            if pack is HAYWIRE:
+                publisher.withdraw(pack)
     mine = [p for p in found if p.publisher_id == publisher.client_id]
     assert mine
     assert mine[-1].workflow == workflow

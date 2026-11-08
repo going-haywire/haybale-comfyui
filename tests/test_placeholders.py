@@ -184,3 +184,39 @@ def test_etn_nodes_are_not_placeholders_of_the_haywire_pack(img2img: dict) -> No
     interface = read_interface(img2img)
     assert interface.parameters == []
     assert any("HaywireOutput" in p for p in interface.problems)
+
+
+@pytest.mark.skipif(not LIVE_URL, reason="set COMFYUI_URL to run against a ComfyUI server")
+def test_live_haywire_pack_runs_twice_with_images() -> None:
+    """An identical second run still sends the image: Haywire Output is never cached."""
+    from PIL import Image
+
+    from haybale_comfyui.runtime.client import ComfyClient
+
+    with ComfyClient(str(LIVE_URL)) as client:
+        if client.protocol() is None:
+            pytest.skip("comfyui-haywire is not installed on the server")
+        workflow = {
+            "1": {
+                "class_type": "HaywireParameter",
+                "inputs": {"name": "Gain", "type": "number", "default": "1.5"},
+            },
+            "2": {"class_type": "HaywireImage", "inputs": {"name": "Source"}},
+            "3": {
+                "class_type": "ImageScaleBy",
+                "inputs": {"image": ["2", 0], "upscale_method": "nearest-exact", "scale_by": ["1", 0]},
+            },
+            "4": {"class_type": "HaywireOutput", "inputs": {"images": ["3", 0], "name": "Result"}},
+        }
+        assert read_interface(workflow).usable
+        buf = io.BytesIO()
+        Image.new("RGBA", (40, 20), (10, 200, 30, 128)).save(buf, format="PNG")
+        wf = rewrite(workflow, {"Gain": 2.0}, {"Source": base64.b64encode(buf.getvalue()).decode()})
+        assert missing_inputs(wf, client.object_info()) == []
+        runs = [client.run(wf) for _ in range(2)]
+    for tracker in runs:
+        assert list(tracker.images) == ["Result"]
+        png = tracker.images["Result"][0]
+        assert (int.from_bytes(png[16:20], "big"), int.from_bytes(png[20:24], "big")) == (80, 40)
+    assert "4" not in runs[1].cached_nodes
+    assert runs[1].cached_outputs == []
