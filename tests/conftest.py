@@ -14,6 +14,10 @@ from typing import Any
 
 import pytest
 
+# Import haywire's node package first: importing haybale_comfyui (whose __init__ pulls the
+# registries) before it trips a circular import inside haywire 0.3.4.
+import haywire.core.node  # noqa: F401
+
 
 @pytest.fixture(scope="session")
 def project_root() -> Path:

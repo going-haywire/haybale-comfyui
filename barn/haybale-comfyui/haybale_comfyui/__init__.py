@@ -44,57 +44,57 @@ class Library(BaseLibrary):
         base_path = Path(__file__).parent
 
         self.add_folder_to_registry(
-            folder_path=str(base_path / 'settings'),
+            folder_path=str(base_path / "settings"),
             registry_cls=SettingsRegistry,
         )
 
         self.add_folder_to_registry(
-            folder_path=str(base_path / 'states'),
+            folder_path=str(base_path / "states"),
             registry_cls=LibraryStateRegistry,
         )
 
         self.add_folder_to_registry(
-            folder_path=str(base_path / 'themes'),
+            folder_path=str(base_path / "themes"),
             registry_cls=ThemeRegistry,
         )
 
         self.add_folder_to_registry(
-            folder_path=str(base_path / 'types'),
+            folder_path=str(base_path / "types"),
             registry_cls=TypeRegistry,
         )
 
         self.add_folder_to_registry(
-            folder_path=str(base_path / 'adapters'),
+            folder_path=str(base_path / "adapters"),
             registry_cls=AdapterRegistry,
         )
 
         self.add_folder_to_registry(
-            folder_path=str(base_path / 'widgets'),
+            folder_path=str(base_path / "widgets"),
             registry_cls=WidgetRegistry,
         )
 
         self.add_folder_to_registry(
-            folder_path=str(base_path / 'skins'),
+            folder_path=str(base_path / "skins"),
             registry_cls=SkinRegistry,
         )
 
         self.add_folder_to_registry(
-            folder_path=str(base_path / 'nodes'),
+            folder_path=str(base_path / "nodes"),
             registry_cls=NodeRegistry,
         )
 
         self.add_folder_to_registry(
-            folder_path=str(base_path / 'macros'),
+            folder_path=str(base_path / "macros"),
             registry_cls=MacroRegistry,
         )
 
         self.add_folder_to_registry(
-            folder_path=str(base_path / 'panels'),
+            folder_path=str(base_path / "panels"),
             registry_cls=PanelRegistry,
         )
 
         self.add_folder_to_registry(
-            folder_path=str(base_path / 'editors'),
+            folder_path=str(base_path / "editors"),
             registry_cls=EditorTypeRegistry,
         )
 
