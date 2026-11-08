@@ -1,0 +1,972 @@
+[
+ {
+  "kind": "subscribe",
+  "status": 200,
+  "body": "{\"status\": \"success\"}"
+ },
+ {
+  "kind": "publish",
+  "status": 200,
+  "body": "{\"status\": \"success\"}"
+ },
+ {
+  "kind": "json",
+  "run": "exchange",
+  "msg": {
+   "type": "etn_workflow_published",
+   "data": {
+    "publisher": {
+     "name": "spike-img2img",
+     "id": "spike-publisher"
+    },
+    "workflow": {
+     "10": {
+      "class_type": "ETN_Parameter",
+      "inputs": {
+       "name": "Prompt",
+       "type": "prompt (positive)",
+       "default": "a green pear"
+      }
+     },
+     "11": {
+      "class_type": "ETN_Parameter",
+      "inputs": {
+       "name": "Strength",
+       "type": "number",
+       "default": "0.6",
+       "min": 0.0,
+       "max": 1.0
+      }
+     },
+     "12": {
+      "class_type": "ETN_Parameter",
+      "inputs": {
+       "name": "Seed",
+       "type": "number (integer)",
+       "default": "1",
+       "min": 0,
+       "max": 2147483648
+      }
+     },
+     "20": {
+      "class_type": "ETN_KritaImageLayer",
+      "inputs": {
+       "name": "Source"
+      }
+     },
+     "1": {
+      "class_type": "CheckpointLoaderSimple",
+      "inputs": {
+       "ckpt_name": "v1-5-pruned-emaonly.safetensors"
+      }
+     },
+     "2": {
+      "class_type": "CLIPTextEncode",
+      "inputs": {
+       "text": [
+        "10",
+        0
+       ],
+       "clip": [
+        "1",
+        1
+       ]
+      }
+     },
+     "3": {
+      "class_type": "CLIPTextEncode",
+      "inputs": {
+       "text": "",
+       "clip": [
+        "1",
+        1
+       ]
+      }
+     },
+     "4": {
+      "class_type": "VAEEncode",
+      "inputs": {
+       "pixels": [
+        "20",
+        0
+       ],
+       "vae": [
+        "1",
+        2
+       ]
+      }
+     },
+     "5": {
+      "class_type": "KSampler",
+      "inputs": {
+       "model": [
+        "1",
+        0
+       ],
+       "positive": [
+        "2",
+        0
+       ],
+       "negative": [
+        "3",
+        0
+       ],
+       "latent_image": [
+        "4",
+        0
+       ],
+       "seed": [
+        "12",
+        0
+       ],
+       "steps": 6,
+       "cfg": 7.0,
+       "sampler_name": "euler",
+       "scheduler": "normal",
+       "denoise": [
+        "11",
+        0
+       ]
+      }
+     },
+     "6": {
+      "class_type": "VAEDecode",
+      "inputs": {
+       "samples": [
+        "5",
+        0
+       ],
+       "vae": [
+        "1",
+        2
+       ]
+      }
+     },
+     "30": {
+      "class_type": "ETN_KritaOutput",
+      "inputs": {
+       "images": [
+        "6",
+        0
+       ],
+       "x": 0,
+       "y": 0,
+       "name": "Result",
+       "batch_mode": "default",
+       "resize_canvas": false
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "kind": "roundtrip_equal",
+  "value": true
+ },
+ {
+  "kind": "post_unrewritten",
+  "status": 200,
+  "body": {
+   "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b",
+   "number": 0,
+   "node_errors": {}
+  }
+ },
+ {
+  "t": 0.0,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "status",
+   "data": {
+    "status": {
+     "exec_info": {
+      "queue_remaining": 1
+     }
+    }
+   }
+  }
+ },
+ {
+  "t": 0.003,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "status",
+   "data": {
+    "status": {
+     "exec_info": {
+      "queue_remaining": 1
+     }
+    }
+   }
+  }
+ },
+ {
+  "t": 0.003,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "execution_start",
+   "data": {
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b",
+    "timestamp": 1794171754033
+   }
+  }
+ },
+ {
+  "t": 0.003,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "execution_cached",
+   "data": {
+    "nodes": [],
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b",
+    "timestamp": 1794171754035
+   }
+  }
+ },
+ {
+  "t": 0.004,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "executing",
+   "data": {
+    "node": "1",
+    "display_node": "1",
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b"
+   }
+  }
+ },
+ {
+  "t": 0.179,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "executing",
+   "data": {
+    "node": "11",
+    "display_node": "11",
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b"
+   }
+  }
+ },
+ {
+  "t": 0.18,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "executing",
+   "data": {
+    "node": "12",
+    "display_node": "12",
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b"
+   }
+  }
+ },
+ {
+  "t": 0.181,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "executing",
+   "data": {
+    "node": "20",
+    "display_node": "20",
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b"
+   }
+  }
+ },
+ {
+  "t": 0.24,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "executing",
+   "data": {
+    "node": "4",
+    "display_node": "4",
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b"
+   }
+  }
+ },
+ {
+  "t": 0.686,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "executing",
+   "data": {
+    "node": "3",
+    "display_node": "3",
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b"
+   }
+  }
+ },
+ {
+  "t": 3.846,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "executing",
+   "data": {
+    "node": "10",
+    "display_node": "10",
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b"
+   }
+  }
+ },
+ {
+  "t": 3.849,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "executing",
+   "data": {
+    "node": "2",
+    "display_node": "2",
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b"
+   }
+  }
+ },
+ {
+  "t": 3.882,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "executing",
+   "data": {
+    "node": "5",
+    "display_node": "5",
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b"
+   }
+  }
+ },
+ {
+  "t": 25.142,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "progress",
+   "data": {
+    "value": 1,
+    "max": 6,
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b",
+    "node": "5"
+   }
+  }
+ },
+ {
+  "t": 25.256,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "progress",
+   "data": {
+    "value": 2,
+    "max": 6,
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b",
+    "node": "5"
+   }
+  }
+ },
+ {
+  "t": 25.567,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "progress",
+   "data": {
+    "value": 3,
+    "max": 6,
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b",
+    "node": "5"
+   }
+  }
+ },
+ {
+  "t": 25.869,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "progress",
+   "data": {
+    "value": 4,
+    "max": 6,
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b",
+    "node": "5"
+   }
+  }
+ },
+ {
+  "t": 26.172,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "progress",
+   "data": {
+    "value": 5,
+    "max": 6,
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b",
+    "node": "5"
+   }
+  }
+ },
+ {
+  "t": 26.473,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "progress",
+   "data": {
+    "value": 6,
+    "max": 6,
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b",
+    "node": "5"
+   }
+  }
+ },
+ {
+  "t": 26.71,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "executing",
+   "data": {
+    "node": "6",
+    "display_node": "6",
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b"
+   }
+  }
+ },
+ {
+  "t": 28.132,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "executing",
+   "data": {
+    "node": "30",
+    "display_node": "30",
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b"
+   }
+  }
+ },
+ {
+  "t": 28.347,
+  "run": "unrewritten",
+  "kind": "binary",
+  "header": [
+   1,
+   2
+  ],
+  "len": 146670,
+  "magic": "89504e47"
+ },
+ {
+  "t": 28.347,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "executed",
+   "data": {
+    "node": "30",
+    "display_node": "30",
+    "output": {
+     "images": [
+      {
+       "source": "websocket",
+       "content-type": "image/png",
+       "type": "output"
+      }
+     ],
+     "info": [
+      {
+       "name": "Result",
+       "offset_x": 0,
+       "offset_y": 0,
+       "batch_mode": "default",
+       "resize_canvas": false
+      }
+     ]
+    },
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b"
+   }
+  }
+ },
+ {
+  "t": 28.347,
+  "run": "unrewritten",
+  "kind": "json",
+  "msg": {
+   "type": "execution_success",
+   "data": {
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b",
+    "timestamp": 1794171782171
+   }
+  }
+ },
+ {
+  "kind": "post",
+  "run": "rewritten1",
+  "status": 200,
+  "body": {
+   "prompt_id": "dd67d2c7-1d6b-4e72-8559-97270eafd633",
+   "number": 1,
+   "node_errors": {}
+  }
+ },
+ {
+  "t": 0.0,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "status",
+   "data": {
+    "status": {
+     "exec_info": {
+      "queue_remaining": 0
+     }
+    }
+   }
+  }
+ },
+ {
+  "t": 0.0,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "executing",
+   "data": {
+    "node": null,
+    "prompt_id": "5b65f9ca-628e-4cf3-9957-e9e25b9ea70b"
+   }
+  }
+ },
+ {
+  "t": 0.003,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "status",
+   "data": {
+    "status": {
+     "exec_info": {
+      "queue_remaining": 1
+     }
+    }
+   }
+  }
+ },
+ {
+  "t": 0.003,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "status",
+   "data": {
+    "status": {
+     "exec_info": {
+      "queue_remaining": 1
+     }
+    }
+   }
+  }
+ },
+ {
+  "t": 0.003,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "execution_start",
+   "data": {
+    "prompt_id": "dd67d2c7-1d6b-4e72-8559-97270eafd633",
+    "timestamp": 1794171782387
+   }
+  }
+ },
+ {
+  "t": 0.003,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "execution_cached",
+   "data": {
+    "nodes": [
+     "1",
+     "3"
+    ],
+    "prompt_id": "dd67d2c7-1d6b-4e72-8559-97270eafd633",
+    "timestamp": 1794171782388
+   }
+  }
+ },
+ {
+  "t": 0.004,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "executing",
+   "data": {
+    "node": "20",
+    "display_node": "20",
+    "prompt_id": "dd67d2c7-1d6b-4e72-8559-97270eafd633"
+   }
+  }
+ },
+ {
+  "t": 0.016,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "executing",
+   "data": {
+    "node": "4",
+    "display_node": "4",
+    "prompt_id": "dd67d2c7-1d6b-4e72-8559-97270eafd633"
+   }
+  }
+ },
+ {
+  "t": 0.207,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "executing",
+   "data": {
+    "node": "2",
+    "display_node": "2",
+    "prompt_id": "dd67d2c7-1d6b-4e72-8559-97270eafd633"
+   }
+  }
+ },
+ {
+  "t": 0.239,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "executing",
+   "data": {
+    "node": "5",
+    "display_node": "5",
+    "prompt_id": "dd67d2c7-1d6b-4e72-8559-97270eafd633"
+   }
+  }
+ },
+ {
+  "t": 0.401,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "progress",
+   "data": {
+    "value": 1,
+    "max": 6,
+    "prompt_id": "dd67d2c7-1d6b-4e72-8559-97270eafd633",
+    "node": "5"
+   }
+  }
+ },
+ {
+  "t": 0.703,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "progress",
+   "data": {
+    "value": 2,
+    "max": 6,
+    "prompt_id": "dd67d2c7-1d6b-4e72-8559-97270eafd633",
+    "node": "5"
+   }
+  }
+ },
+ {
+  "t": 1.005,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "progress",
+   "data": {
+    "value": 3,
+    "max": 6,
+    "prompt_id": "dd67d2c7-1d6b-4e72-8559-97270eafd633",
+    "node": "5"
+   }
+  }
+ },
+ {
+  "t": 1.306,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "progress",
+   "data": {
+    "value": 4,
+    "max": 6,
+    "prompt_id": "dd67d2c7-1d6b-4e72-8559-97270eafd633",
+    "node": "5"
+   }
+  }
+ },
+ {
+  "t": 1.608,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "progress",
+   "data": {
+    "value": 5,
+    "max": 6,
+    "prompt_id": "dd67d2c7-1d6b-4e72-8559-97270eafd633",
+    "node": "5"
+   }
+  }
+ },
+ {
+  "t": 1.911,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "progress",
+   "data": {
+    "value": 6,
+    "max": 6,
+    "prompt_id": "dd67d2c7-1d6b-4e72-8559-97270eafd633",
+    "node": "5"
+   }
+  }
+ },
+ {
+  "t": 2.139,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "executing",
+   "data": {
+    "node": "6",
+    "display_node": "6",
+    "prompt_id": "dd67d2c7-1d6b-4e72-8559-97270eafd633"
+   }
+  }
+ },
+ {
+  "t": 2.423,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "executing",
+   "data": {
+    "node": "30",
+    "display_node": "30",
+    "prompt_id": "dd67d2c7-1d6b-4e72-8559-97270eafd633"
+   }
+  }
+ },
+ {
+  "t": 2.455,
+  "run": "rewritten1",
+  "kind": "binary",
+  "header": [
+   1,
+   2
+  ],
+  "len": 355087,
+  "magic": "89504e47"
+ },
+ {
+  "t": 2.455,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "executed",
+   "data": {
+    "node": "30",
+    "display_node": "30",
+    "output": {
+     "images": [
+      {
+       "source": "websocket",
+       "content-type": "image/png",
+       "type": "output"
+      }
+     ],
+     "info": [
+      {
+       "name": "Result",
+       "offset_x": 0,
+       "offset_y": 0,
+       "batch_mode": "default",
+       "resize_canvas": false
+      }
+     ]
+    },
+    "prompt_id": "dd67d2c7-1d6b-4e72-8559-97270eafd633"
+   }
+  }
+ },
+ {
+  "t": 2.455,
+  "run": "rewritten1",
+  "kind": "json",
+  "msg": {
+   "type": "execution_success",
+   "data": {
+    "prompt_id": "dd67d2c7-1d6b-4e72-8559-97270eafd633",
+    "timestamp": 1794171784815
+   }
+  }
+ },
+ {
+  "kind": "post",
+  "run": "rewritten2_identical",
+  "status": 200,
+  "body": {
+   "prompt_id": "65567007-ac91-4953-8cba-0a0db46dad64",
+   "number": 2,
+   "node_errors": {}
+  }
+ },
+ {
+  "t": 0.0,
+  "run": "rewritten2_identical",
+  "kind": "json",
+  "msg": {
+   "type": "status",
+   "data": {
+    "status": {
+     "exec_info": {
+      "queue_remaining": 0
+     }
+    }
+   }
+  }
+ },
+ {
+  "t": 0.0,
+  "run": "rewritten2_identical",
+  "kind": "json",
+  "msg": {
+   "type": "executing",
+   "data": {
+    "node": null,
+    "prompt_id": "dd67d2c7-1d6b-4e72-8559-97270eafd633"
+   }
+  }
+ },
+ {
+  "t": 0.002,
+  "run": "rewritten2_identical",
+  "kind": "json",
+  "msg": {
+   "type": "status",
+   "data": {
+    "status": {
+     "exec_info": {
+      "queue_remaining": 1
+     }
+    }
+   }
+  }
+ },
+ {
+  "t": 0.002,
+  "run": "rewritten2_identical",
+  "kind": "json",
+  "msg": {
+   "type": "status",
+   "data": {
+    "status": {
+     "exec_info": {
+      "queue_remaining": 1
+     }
+    }
+   }
+  }
+ },
+ {
+  "t": 0.002,
+  "run": "rewritten2_identical",
+  "kind": "json",
+  "msg": {
+   "type": "execution_start",
+   "data": {
+    "prompt_id": "65567007-ac91-4953-8cba-0a0db46dad64",
+    "timestamp": 1794171784847
+   }
+  }
+ },
+ {
+  "t": 0.002,
+  "run": "rewritten2_identical",
+  "kind": "json",
+  "msg": {
+   "type": "execution_cached",
+   "data": {
+    "nodes": [
+     "20",
+     "1",
+     "2",
+     "3",
+     "4",
+     "5",
+     "6",
+     "30"
+    ],
+    "prompt_id": "65567007-ac91-4953-8cba-0a0db46dad64",
+    "timestamp": 1794171784848
+   }
+  }
+ },
+ {
+  "t": 0.002,
+  "run": "rewritten2_identical",
+  "kind": "json",
+  "msg": {
+   "type": "executed",
+   "data": {
+    "node": "30",
+    "display_node": "30",
+    "output": {
+     "images": [
+      {
+       "source": "websocket",
+       "content-type": "image/png",
+       "type": "output"
+      }
+     ],
+     "info": [
+      {
+       "name": "Result",
+       "offset_x": 0,
+       "offset_y": 0,
+       "batch_mode": "default",
+       "resize_canvas": false
+      }
+     ]
+    },
+    "prompt_id": "65567007-ac91-4953-8cba-0a0db46dad64"
+   }
+  }
+ },
+ {
+  "t": 0.004,
+  "run": "rewritten2_identical",
+  "kind": "json",
+  "msg": {
+   "type": "execution_success",
+   "data": {
+    "prompt_id": "65567007-ac91-4953-8cba-0a0db46dad64",
+    "timestamp": 1794171784851
+   }
+  }
+ },
+ {
+  "kind": "unsubscribe",
+  "status": 200,
+  "body": "{\"status\": \"success\"}"
+ }
+]

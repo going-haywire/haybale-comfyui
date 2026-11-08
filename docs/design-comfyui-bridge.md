@@ -115,6 +115,38 @@ messages: `spike/` (`spike_core.py`, `spike_err.py`, `fixtures/*.json`).
 - **Cancel**: `POST /interrupt {prompt_id}` → 200; the run ends with `execution_interrupted
   {prompt_id, node_id, node_type, executed}` and no image.
 
+### 3.2 Spike results, part 2: placeholders with comfyui-tooling-nodes 3.4.0 **[V]**
+
+Same server, after the owner installed `comfyui-tooling-nodes` (commit `0abe742`, "Version
+3.4.0"). Script `spike/spike_placeholders.py`, log `spike/fixtures/placeholder_log.json`. An
+img2img workflow with three `ETN_Parameter` (prompt, strength, seed), one `ETN_KritaImageLayer`
+and one `ETN_KritaOutput` named "Result".
+
+- **Exchange**: subscribe, publish and unsubscribe each answer 200 `{"status": "success"}`. A
+  publish reaches the subscriber as `etn_workflow_published {publisher: {name, id}, workflow}`
+  with the workflow unchanged. The script published itself, standing in for the browser; what
+  ComfyUI's own frontend sends on `graphChanged` is **not yet seen** (§8 step 0).
+- **`/object_info`** confirms the placeholder inputs: `ETN_Parameter` has `name`, `type` (COMBO
+  of the eight types), `default` (always a STRING), optional `min`/`max` (FLOAT), output `*`;
+  `ETN_KritaImageLayer` has `name` → `image`, `mask`; `ETN_KritaOutput` has `images`, `x`, `y`,
+  `name`, `batch_mode`, `resize_canvas`. `ETN_LoadImageBase64` takes `image` (STRING, base64 PNG)
+  → `image`, `mask`. So the mapping table can read port defaults and ranges from the workflow
+  itself; `default` must be parsed per type.
+- **Unrewritten**, the placeholder workflow runs in ComfyUI as is (dummy values), as expected.
+- **Rewritten** (parameter → literal, image layer → `ETN_LoadImageBase64` under the same node id,
+  so downstream links stay valid): runs; the result keeps the input image's composition.
+- **Output**: `ETN_KritaOutput` sends the binary PNG frame and then **`executed {node, output:
+  {images: [{source: "websocket"}], info: [{name, offset_x, offset_y, batch_mode,
+  resize_canvas}]}, prompt_id}`**. The `info.name` gives the outlet a frame belongs to.
+- **Caching, the important one**: an identical second prompt reports *every* node cached,
+  including `ETN_KritaOutput`, replays its `executed` message, and sends **no image frame**.
+  (`SaveImageWebsocket` in §3.1 re-ran instead.) So the haywire node must either keep the last
+  images per submitted-graph hash in `self.cache` and reuse them when `executed` arrives without
+  frames, or make the output node always run. The second fails for a cache hit left by another
+  client or a restarted haywire, so the node needs both: reuse when it can, and otherwise resubmit
+  once with an always-run output. In Option B our output node should declare itself never cached
+  (ComfyUI's `IS_CHANGED` hook **[I]**), which removes the problem at the source.
+
 ## 4. The haywire node: ComfyUI Workflow
 
 | | |
@@ -229,8 +261,8 @@ Licence and last push checked via the GitHub API on 2026-11-08 **[S]**.
 
 ## 8. Order of small PRs
 
-0. **Spike** (needs a live ComfyUI + comfyui-tooling-nodes). Part 1, the core protocol, is done
-   (§3.1); part 2 needs the tooling nodes installed: subscribe, receive one published
+0. **Spike** (needs a live ComfyUI + comfyui-tooling-nodes). Parts 1 and 2 are done (§3.1,
+   §3.2); left: one publish from ComfyUI's own frontend. Original plan: subscribe, receive one published
    workflow, rewrite one Parameter and one image placeholder, `POST /prompt`, receive progress and
    one PNG frame. Capture every message as a test fixture. Settles the **[I]** and **[S]** marks.
 1. Packaging: dependencies, `haybale.toml`, library settings + panel.
@@ -250,8 +282,10 @@ Licence and last push checked via the GitHub API on 2026-11-08 **[S]**.
   no `executed` follows (§3.1); a frame belongs to the prompt of the last `executing` message.
   That holds as long as the server runs one prompt at a time **[I: ComfyUI's single queue
   worker]**; the output name per frame (several outputs) needs Acly's info dict or our own.
-- **ComfyUI input caching**: settled for `SaveImageWebsocket` (it re-sends, §3.1); still to check
-  for `ETN_KritaOutput`.
+- **ComfyUI input caching**: settled (§3.1, §3.2): `SaveImageWebsocket` re-sends,
+  `ETN_KritaOutput` does not. How to force a re-run under Option A without changing the
+  workflow's result is still open (a re-run with a harmless changed input, or switching the
+  output to `SaveImageWebsocket` in the rewrite, which loses `info.name`).
 - **Auth**: which header? A plain ComfyUI has none; reverse proxies use `Authorization: Bearer …`
   or basic auth **[I]**. The setting holds a full header value; the header name may need a field.
 - **ComfyUI version pinning**: minimum ComfyUI and tooling-nodes / comfyui-haywire versions; how
