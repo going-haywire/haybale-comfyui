@@ -33,7 +33,7 @@ shapes (client_id in the websocket URL and the prompt body, `progress` carrying 
 `images` entries in history outputs with filename/subfolder/type) are from my memory **[I]** and must
 be checked against a live server first thing (step 0 below).
 
-## 3. Node set (kept small)
+## 3. Node set (kept small: one node)
 
 Library setting **ComfyUI** (like spandrel's settings): server URL (default `http://127.0.0.1:8188`),
 optional auth header name/value (stored as a secret if the framework has one, otherwise flagged for
@@ -42,10 +42,9 @@ the owner), timeout, "free models after run".
 | Node | Inlets | Config | Outlets |
 |---|---|---|---|
 | **ComfyUI Workflow** | `image` (optional IMAGE), dynamic inlets from the workflow (below) | workflow file (API-format JSON), seed behaviour (fixed/randomize), output pick | `image` IMAGE (and extra outlets if the workflow has several outputs) |
-| **ComfyUI Text to Image** | `prompt` STRING, `negative` STRING, `seed`, `width`, `height` | `template` (bundled, e.g. SDXL, Flux) | `image` IMAGE |
+| ~~ComfyUI Text to Image~~ | dropped from v1, see §6 | | |
 
-Text to Image is the same engine with a bundled template and fixed ports; it is a thin subclass.
-Two nodes, plus the settings. Deliberately **no** KSampler-style granular nodes: that would be a
+One node plus the settings (Text to Image deferred, §6). Deliberately **no** KSampler-style granular nodes: that would be a
 second graph engine.
 
 ### 3.1 How a generic workflow becomes ports (no server pack needed)
@@ -103,15 +102,30 @@ convention proves too weak.** Keep the wire protocol versioned so either end can
 2. `runtime/client.py`: small async-free client (httpx + ws), unit tests against a fake server.
 3. `runtime/workflow.py`: parse API JSON, `hw:` convention, patch, validate; pure functions, fully tested.
 4. **ComfyUI Workflow** node with dynamic ports, progress, cancel.
-5. **ComfyUI Text to Image** + two bundled templates.
+5. One example workflow in `examples/`.
 6. Docs and example graph. Pack (§4) only afterwards.
 
-## 6. Open questions for the owner
+## 6. Decisions so far (owner, 2026-11-08) and what is still open
 
-1. Is there a ComfyUI server I can test against (URL, version), or should I install one locally? The
-   two 1080 Ti can run it, but that needs the cu126 torch (see haybale-diffusion note §0).
-2. Where do secrets live in haywire? I did not check whether there is a secret/credential setting type.
-3. Bundled templates: which two (SDXL and Flux.2 Klein?). They depend on models the server has;
-   the node should list `/object_info` checkpoints, not hard-code names.
-4. Library licence: MIT (like the other haybales)? Server pack GPL-3.0 as above?
-5. Bundle ComfyUI workflow JSON in the library, or only user-supplied files in v1?
+Decided: library licence MIT, a future server pack GPL-3.0 (§4). No test server yet.
+
+**Secrets (checked in haywire-repo).** There is no secret or credential setting type for libraries
+[V: searched `core/settings` and `barn`; the only hits are the studio's own login/token system, which
+does not apply]. What exists: `LibrarySettings` are plain files (`~/.haywire/settings.toml` and
+`<workspace>/.haywire/settings.toml` per `setting-canon.md`; the persistence code I read writes
+JSON, so the docs and code disagree on format, not verified further), and `TextWidget` has a
+`password=True` option that only masks the field on screen [V]. The workspace file can end up in git,
+and node settings are saved inside graph files, so a secret must not live in either by default.
+Proposal: the library setting stores the **name of an environment variable** that holds the auth value
+(for example `COMFYUI_AUTH`), read at run time; a plain-value field exists but shows a card warning
+that it is saved in clear text. Ask the framework owners whether a real secret setting is planned.
+
+**Bundled templates.** They only exist to serve the Text to Image node, so users can type a prompt
+without first exporting a workflow from ComfyUI. The cost: each template hard-codes a checkpoint and
+node classes, which differ per server, so it breaks on any server that lacks that model. Proposal:
+**drop the Text to Image node and templates from v1.** One node, ComfyUI Workflow, plus one example
+workflow file in `examples/` (documented, not a node) that users adapt. Add templates later if people
+ask, built from `/object_info` so the checkpoint name comes from the server.
+
+Still open: a ComfyUI server to test against (step 0 needs it); whether the `hw:` title convention
+(§3.1) is acceptable or you prefer a different marker.
