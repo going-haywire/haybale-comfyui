@@ -288,10 +288,11 @@ Licence and last push checked via the GitHub API on 2026-11-08 **[S]**.
 0. **Spike**: done (§3.1–§3.3). Original plan: subscribe, receive one published
    workflow, rewrite one Parameter and one image placeholder, `POST /prompt`, receive progress and
    one PNG frame. Capture every message as a test fixture. Settles the **[I]** and **[S]** marks.
-1. Packaging: dependencies, `haybale.toml`, library settings + panel.
-2. `runtime/client.py`: HTTP + websocket client, tested against the spike fixtures.
+1. Packaging: dependencies, `haybale.toml`, library settings + panel. **Done.**
+2. `runtime/client.py`: HTTP + websocket client, tested against the spike fixtures. **Done**
+   (with `runtime/tracker.py`; live tests run when `COMFYUI_URL` is set).
 3. `runtime/placeholders.py`: the mapping table, placeholder parsing, graph rewrite; pure
-   functions, fully tested.
+   functions, fully tested. **Done.**
 4. **ComfyUI Workflow** node: picker, dynamic ports, store, progress, cancel.
 5. Loading saved files: API format first, then UI format via `/object_info`.
 6. Option B: the `comfyui-haywire` pack (separate GPL-3.0 repo) and the table switch.
