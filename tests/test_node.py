@@ -32,11 +32,13 @@ def port_ids(node: Any) -> set[str]:
 
 
 @pytest.mark.integration
-def test_new_node_has_no_ports_and_refuses_to_run(graph: Any) -> None:
+def test_new_node_has_only_the_image_outlet_and_refuses_to_run(graph: Any) -> None:
+    """A data node needs an outlet from the start (structural validation)."""
     from haywire.core.execution.execution_context import ExecutionContext
 
     node = add_node(graph, *NODE)
-    assert not any(pid.startswith(("param_", "image_", "out_")) for pid in port_ids(node))
+    assert {pid for pid in port_ids(node) if pid.startswith(("param_", "image_", "out_"))} == {"out_image"}
+    assert not node.wrapper.state.error_structural
     with pytest.raises(ValueError, match="pick one"):
         node.worker(ExecutionContext(global_ctx={}, local_ctx={}))
 

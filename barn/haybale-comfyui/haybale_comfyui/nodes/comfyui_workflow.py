@@ -125,7 +125,11 @@ class ComfyUIWorkflowNode(BaseNode):
     progress = bag(WorkflowProgress)
 
     def init(self) -> None:
-        pass  # every port comes from the picked workflow
+        from haybale_image.types.image import IMAGE
+
+        # A data node needs an outlet from the start. Picking a workflow replaces it; a Haywire
+        # Output named "Image" (its default name) gets the same id and keeps its edges.
+        self.add(IMAGE.as_outlet("out_image", label="Image", description="Haywire Output 'Image'"))
 
     def post_init(self) -> None:
         self._lock = threading.Lock()
