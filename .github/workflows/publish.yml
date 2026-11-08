@@ -42,14 +42,22 @@ jobs:
         with:
           enable-cache: true
       - run: uv python install ${{ env.PYTHON_VERSION }}
-      - run: uv sync --frozen
-      - name: Run tests
-        if: hashFiles('tests/**') != ''
-        run: uv run --frozen pytest -q
+      # Adapted by hand (as in haybale-spandrel): the root pyproject.toml is a dev-only
+      # workspace whose [tool.uv.sources] point at a local haywire-repo checkout that does
+      # not exist in CI, so nothing here loads it (no uv sync / uv run at the root).
       - name: Build wheel and sdist
+        working-directory: barn/${{ matrix.lib.dist }}
         run: |
-          rm -rf dist/
-          uv build --package ${{ matrix.lib.dist }}
+          rm -rf "${GITHUB_WORKSPACE}/dist"
+          uv build --out-dir "${GITHUB_WORKSPACE}/dist"
+      # Installing the wheel into a clean venv resolves its dependencies against PyPI,
+      # which a local editable checkout never checks. The tests then run against it;
+      # those that need a ComfyUI server skip without COMFYUI_URL.
+      - name: Test the built wheel
+        run: |
+          uv venv --python ${{ env.PYTHON_VERSION }} /tmp/check
+          VIRTUAL_ENV=/tmp/check uv pip install dist/*.whl pytest pytest-timeout
+          if [ -d tests ]; then /tmp/check/bin/python -m pytest -q -p no:cacheprovider; fi
       - uses: actions/upload-artifact@v4
         with:
           name: dist-${{ matrix.lib.dist }}

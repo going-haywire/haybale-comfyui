@@ -59,3 +59,8 @@ testpaths = ["tests"]
 markers = ["integration: needs the full library system"]
 addopts = "--strict-markers --tb=short"
 timeout = 120
+
+[tool.haywire.marketstall]
+# Released wheels go to PyPI, so every marketstall row carries
+# `haybale-comfyui==<version>` rather than a git clone spec.
+distribute = "pypi"
