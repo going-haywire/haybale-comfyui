@@ -1,0 +1,27 @@
+# Normalize line endings on commit; check out with the platform's native EOL.
+* text=auto
+
+# Binary assets — never diffed, never EOL-converted.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.mp4 binary
+*.onnx binary
+*.blob binary
+
+# ── About Git LFS ───────────────────────────────────────────────────────────
+# Do NOT add LFS smudge-filter directives here without understanding the
+# consequence. `haywire share` publishes by git URL, so consumers clone this
+# repo. Git stores an LFS-tracked file as a ~130-byte pointer, and a consumer
+# without the LFS system receives that pointer text instead of the real asset.
+# The clone succeeds; your library breaks at runtime when it loads the file.
+# Whether the clone resolves the pointer depends on the consumer's own git
+# config — something you cannot control or detect from here.
+#
+# If your library genuinely needs large assets, download them at runtime into a
+# cache directory instead of committing them.

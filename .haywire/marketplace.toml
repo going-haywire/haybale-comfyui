@@ -1,0 +1,11 @@
+# Project marketplace — managed by haywire.
+# [[heaps]] are project-scoped editable libraries, written at `haywire init` time.
+# [[caches]] is the cache populated by the Library Manager's refresh action;
+# leave it empty here until you've added remote sources to ~/.haywire/marketplace.toml.
+
+[[heaps]]
+name = "haybale-comfyui"
+path = "/home/maybites/Work/going-haywire/haybale-comfyui/barn/haybale-comfyui"
+label = "Haybale Comfyui"
+description = "Local library for the haybale-comfyui project"
+

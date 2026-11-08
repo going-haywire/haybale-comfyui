@@ -1,0 +1,11 @@
+[project]
+name = "haybale-comfyui-dev"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [ "haywire-studio>=0.3.4", "haybale-studio>=0.3.4", "haybale-marketplace>=0.3.4", "haybale-comfyui",]
+
+[tool.uv.workspace]
+members = [ "barn/*",]
+
+[tool.uv.sources.haybale-comfyui]
+workspace = true

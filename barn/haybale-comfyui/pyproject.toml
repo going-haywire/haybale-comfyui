@@ -1,0 +1,30 @@
+# Full field reference: docs/reference/files/pyproject-toml.md
+[project]
+# ── generated from haybale.toml at publish; hand-edits are reported as drift ─
+name = "haybale-comfyui"  # from haybale.name
+description = "Local library for haybale-comfyui project"  # from haybale.description
+keywords = ["experimental", "project-local"]  # from haybale.tags
+
+# CANON, but owned by the release machinery — synced to haybale.toml
+version = "0.0.1"
+
+# ── authored here ────────────────────────────────────────────────────────────
+requires-python = ">=3.12"
+license = {text = "MIT"}
+
+# CANON — pip requirements. Add third-party packages and sibling haybales here.
+dependencies = ["haywire-core>=0.3.4"]
+
+# The key is the entry-point name (unique within the group; need not match the
+# library id). The value is <module>:<class>.
+[project.entry-points."haywire.libraries"]
+haybale-comfyui = "haybale_comfyui:Library"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# Declares the package DIRECTORY, so everything not VCS-ignored inside it
+# reaches the wheel, including haybale.toml — do not add include/exclude here.
+[tool.hatch.build.targets.wheel]
+packages = ["haybale_comfyui"]

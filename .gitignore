@@ -1,0 +1,42 @@
+# Patterns below are anchored with a leading slash (/build/) so they match only
+# at the repo root. An unanchored pattern (build/) matches at EVERY depth —
+# including inside barn/, where it would silently exclude your library's own
+# files. See the note at the end of this file before adding patterns.
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging (root only)
+/build/
+/dist/
+*.egg-info/
+*.egg
+
+# Virtual environments (root only)
+/.venv/
+/venv/
+/env/
+
+# Test / type-check caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.tox/
+.coverage
+htmlcov/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+
+# Haywire per-session UI state (open graph, pan/zoom) — not project state
+.haywire/workspace_state.json
+
+# ── Before you add a pattern ────────────────────────────────────────────────
+# Anything ignored inside barn/<your-library>/ will be MISSING for everyone who
+# installs your library — haywire share publishes by git URL, so consumers get
+# a clone of this repo, not a built package. If a pattern is only meant for the
+# repo root, anchor it with a leading slash: /build/ not build/.

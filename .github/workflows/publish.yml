@@ -1,0 +1,82 @@
+name: Publish
+
+# Publishes every barn/* library to PyPI on a version tag, when the root
+# pyproject.toml declares  [tool.haywire.marketstall] distribute = "pypi".
+# With any other value the run ends green without publishing.
+# To retry a failed run: gh workflow run publish.yml --ref vX.Y.Z
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.12'
+
+jobs:
+  guard:
+    name: Plan
+    runs-on: ubuntu-latest
+    outputs:
+      enabled: ${{ steps.plan.outputs.enabled }}
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Decide what to publish
+        id: plan
+        run: python3 .github/publish_plan.py
+
+  build:
+    name: Build ${{ matrix.lib.dist }}
+    needs: guard
+    if: needs.guard.outputs.enabled == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        lib: ${{ fromJSON(needs.guard.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - run: uv python install ${{ env.PYTHON_VERSION }}
+      - run: uv sync --frozen
+      - name: Run tests
+        if: hashFiles('tests/**') != ''
+        run: uv run --frozen pytest -q
+      - name: Build wheel and sdist
+        run: |
+          rm -rf dist/
+          uv build --package ${{ matrix.lib.dist }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.lib.dist }}
+          path: dist/
+          if-no-files-found: error
+
+  publish:
+    name: Publish ${{ matrix.lib.dist }}
+    needs: [guard, build]
+    if: needs.guard.outputs.enabled == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        lib: ${{ fromJSON(needs.guard.outputs.matrix) }}
+    environment:
+      name: pypi
+      url: https://pypi.org/project/${{ matrix.lib.dist }}/
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-${{ matrix.lib.dist }}
+          path: dist/
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
