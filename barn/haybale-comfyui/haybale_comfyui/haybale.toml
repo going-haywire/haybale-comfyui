@@ -10,9 +10,9 @@ name = "haybale-comfyui"  # pip distribution name; also prefixes every
 version = "0.0.1"  # PEP 440, no "v" — canon here; pyproject.toml carries the synced copy
 
 # ── display ───────────────────────────────────────────────────────────────
-label = "Haybale Comfyui"  # human display name
-description = "Local library for haybale-comfyui project"  # one line
-tags = ["experimental", "project-local"]  # filter tags in the library browser
+label = "ComfyUI"  # human display name
+description = "Run ComfyUI workflows on a ComfyUI server"  # one line
+tags = ["image", "comfyui", "diffusion", "remote"]  # filter tags in the library browser
 
 # ── behaviour ─────────────────────────────────────────────────────────────
 # os = ["macos", "linux"]  # macos/linux/windows; empty/absent = every platform
@@ -20,7 +20,7 @@ tags = ["experimental", "project-local"]  # filter tags in the library browser
 
 # Sibling haybales this library subscribes to, as MODULE names (not
 # distribution names). Required for hot-reload scope tracking.
-linked_libraries = []
+linked_libraries = ["haybale_image"]
 
 # ── declared paths, relative to the project root ────────────────────────────
 # examples_path = "examples/"

@@ -2,8 +2,8 @@
 [project]
 # ── generated from haybale.toml at publish; hand-edits are reported as drift ─
 name = "haybale-comfyui"  # from haybale.name
-description = "Local library for haybale-comfyui project"  # from haybale.description
-keywords = ["experimental", "project-local"]  # from haybale.tags
+description = "Run ComfyUI workflows on a ComfyUI server"  # from haybale.description
+keywords = ["image", "comfyui", "diffusion", "remote"]  # from haybale.tags
 
 # CANON, but owned by the release machinery — synced to haybale.toml
 version = "0.0.1"
@@ -13,7 +13,12 @@ requires-python = ">=3.12"
 license = {text = "MIT"}
 
 # CANON — pip requirements. Add third-party packages and sibling haybales here.
-dependencies = ["haywire-core>=0.3.4"]
+dependencies = [
+    "haywire-core>=0.3.4",
+    "haybale-image>=0.3.4",
+    "httpx>=0.27",
+    "websockets>=13",
+]
 
 # The key is the entry-point name (unique within the group; need not match the
 # library id). The value is <module>:<class>.
