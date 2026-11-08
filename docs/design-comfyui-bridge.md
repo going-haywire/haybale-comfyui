@@ -246,7 +246,14 @@ Same design, our names and a documented, versioned contract: nodes *Haywire Para
 on graph change when a Haywire Output is present. Estimate about 200 lines of Python and 30 of JS.
 Written from this description, not from Acly's code. Adds an install step on the server.
 
-**Recommendation:** A for the spike, B before the first release. The haywire side keeps the
+**Decided (owner, 2026-11-08): B now**, because of the cache problem of §3.2. The pack lives in
+`../comfyui-haywire` (local repo, GPL-3.0, no remote yet). Its Haywire Output is never cached;
+its page hook publishes under the workflow's file name, which also solves the picker label of
+§3.3. Its protocol is documented in that repo's README (protocol version 1, `GET
+/api/haywire/version`). The haywire side describes each pack as a `Pack` in
+`runtime/placeholders.py`: `HAYWIRE` is the default, `ETN` stays for the spike fixtures.
+
+Earlier recommendation: A for the spike, B before the first release. The haywire side keeps the
 placeholder names in the one mapping table (§4.1), so A → B changes that table and the route
 prefix, nothing else.
 

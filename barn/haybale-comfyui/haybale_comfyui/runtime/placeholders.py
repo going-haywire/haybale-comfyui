@@ -1,8 +1,8 @@
 """Placeholder nodes in an API-format ComfyUI workflow: find them, check them, replace them.
 
-Pure functions over plain dicts. The only place that knows the server pack's node names is
-the mapping table below, so moving from comfyui-tooling-nodes (Option A) to our own pack
-(Option B, design note §5) changes the table and nothing else.
+Pure functions over plain dicts. Which node classes are placeholders is described by a
+:class:`Pack`: ``HAYWIRE`` for our comfyui-haywire pack (the default), ``ETN`` for Acly's
+comfyui-tooling-nodes, used in the spike (design note §5).
 """
 
 from __future__ import annotations
@@ -21,39 +21,72 @@ class Kind(Enum):
     OUTPUT = "output"
 
 
-#: Placeholder class → kind (Option A: comfyui-tooling-nodes).
-PLACEHOLDERS: dict[str, Kind] = {
-    "ETN_Parameter": Kind.PARAMETER,
-    "ETN_KritaImageLayer": Kind.IMAGE,
-    "ETN_KritaOutput": Kind.OUTPUT,
-}
+#: Parameter types this library knows, whatever the pack calls them.
+PARAMETER_TYPES = ("number", "integer", "toggle", "text", "prompt", "choice", "auto")
 
-#: Placeholders the pack has but this library does not drive yet.
-UNSUPPORTED: frozenset[str] = frozenset(
-    {
-        "ETN_KritaCanvas",
-        "ETN_KritaSelection",
-        "ETN_KritaMaskLayer",
-        "ETN_KritaStyle",
-        "ETN_KritaStyleAndPrompt",
-        "ETN_KritaSendText",
-    }
+
+@dataclass(frozen=True)
+class Pack:
+    """The server-side node pack: its placeholder classes, image loader and exchange."""
+
+    placeholders: dict[str, Kind]
+    #: Classes of the pack this library does not drive.
+    unsupported: frozenset[str]
+    #: The node an image placeholder is replaced by, and the input taking a base64 PNG. Its
+    #: first output is an IMAGE, like the placeholder's.
+    image_loader: str
+    image_loader_input: str
+    #: The pack's parameter type names → ``PARAMETER_TYPES``.
+    parameter_types: dict[str, str]
+    #: Route prefix and websocket message type of the workflow exchange.
+    exchange_prefix: str
+    published_message: str
+
+
+HAYWIRE = Pack(
+    placeholders={
+        "HaywireParameter": Kind.PARAMETER,
+        "HaywireImage": Kind.IMAGE,
+        "HaywireOutput": Kind.OUTPUT,
+    },
+    unsupported=frozenset(),
+    image_loader="HaywireLoadImage",
+    image_loader_input="data",
+    parameter_types={t: t for t in PARAMETER_TYPES if t != "auto"},
+    exchange_prefix="/api/haywire/workflow",
+    published_message="haywire_workflow_published",
 )
 
-#: The node an image placeholder is replaced by; input ``image`` takes a base64 PNG and its
-#: outputs (image, mask) line up with the placeholder's.
-IMAGE_LOADER = "ETN_LoadImageBase64"
-
-#: Parameter types of ``ETN_Parameter``.
-PARAMETER_TYPES = (
-    "auto",
-    "number",
-    "number (integer)",
-    "toggle",
-    "choice",
-    "text",
-    "prompt (positive)",
-    "prompt (negative)",
+ETN = Pack(
+    placeholders={
+        "ETN_Parameter": Kind.PARAMETER,
+        "ETN_KritaImageLayer": Kind.IMAGE,
+        "ETN_KritaOutput": Kind.OUTPUT,
+    },
+    unsupported=frozenset(
+        {
+            "ETN_KritaCanvas",
+            "ETN_KritaSelection",
+            "ETN_KritaMaskLayer",
+            "ETN_KritaStyle",
+            "ETN_KritaStyleAndPrompt",
+            "ETN_KritaSendText",
+        }
+    ),
+    image_loader="ETN_LoadImageBase64",
+    image_loader_input="image",
+    parameter_types={
+        "auto": "auto",
+        "number": "number",
+        "number (integer)": "integer",
+        "toggle": "toggle",
+        "choice": "choice",
+        "text": "text",
+        "prompt (positive)": "prompt",
+        "prompt (negative)": "prompt",
+    },
+    exchange_prefix="/api/etn/workflow",
+    published_message="etn_workflow_published",
 )
 
 
@@ -64,7 +97,7 @@ class Placeholder:
     node_id: str
     kind: Kind
     name: str
-    #: ``ETN_Parameter`` type; empty for images and outputs.
+    #: One of ``PARAMETER_TYPES``; empty for images and outputs.
     type: str = ""
     default: Any = None
     min: float | None = None
@@ -98,11 +131,11 @@ def slug(name: str) -> str:
 
 
 def parse_default(param_type: str, text: Any) -> Any:
-    """The typed default of a parameter; ``ETN_Parameter`` stores every default as text."""
+    """The typed default of a parameter (one of ``PARAMETER_TYPES``); packs store it as text."""
     raw = "" if text is None else str(text).strip()
     if param_type == "number":
         return float(raw) if raw else 0.0
-    if param_type == "number (integer)":
+    if param_type == "integer":
         return int(float(raw)) if raw else 0
     if param_type == "toggle":
         return raw.lower() in ("true", "1", "yes", "on")
@@ -123,15 +156,15 @@ def consumers_of(workflow: dict[str, Any], node_id: str) -> tuple[tuple[str, str
     return tuple(found)
 
 
-def read_interface(workflow: dict[str, Any]) -> Interface:
+def read_interface(workflow: dict[str, Any], pack: Pack = HAYWIRE) -> Interface:
     """Find the placeholders of an API-format *workflow* and report what stops it being used."""
     result = Interface()
     for node_id, node in workflow.items():
         cls, inputs = node.get("class_type", ""), node.get("inputs") or {}
-        if cls in UNSUPPORTED:
+        if cls in pack.unsupported:
             result.problems.append(f"{cls} (node {node_id}) is not supported yet")
             continue
-        kind = PLACEHOLDERS.get(cls)
+        kind = pack.placeholders.get(cls)
         if kind is None:
             continue
         name = str(inputs.get("name") or "").strip()
@@ -142,9 +175,10 @@ def read_interface(workflow: dict[str, Any]) -> Interface:
                 Placeholder(node_id, kind, name or node_id, consumers=consumers_of(workflow, node_id))
             )
         else:
-            ptype = str(inputs.get("type") or "auto")
-            if ptype not in PARAMETER_TYPES:
-                result.problems.append(f"parameter {name!r} (node {node_id}) has unknown type {ptype!r}")
+            raw_type = str(inputs.get("type") or "")
+            ptype = pack.parameter_types.get(raw_type)
+            if ptype is None:
+                result.problems.append(f"parameter {name!r} (node {node_id}) has unknown type {raw_type!r}")
                 continue
             try:
                 default = parse_default(ptype, inputs.get("default"))
@@ -166,7 +200,8 @@ def read_interface(workflow: dict[str, Any]) -> Interface:
                 )
             )
     if not result.outputs:
-        result.problems.append("no output placeholder: add a Krita Output node")
+        outputs = [c for c, k in pack.placeholders.items() if k is Kind.OUTPUT]
+        result.problems.append(f"no output placeholder: add a {' or '.join(outputs)} node")
     for group in (result.parameters + result.images, result.outputs):
         seen: dict[str, str] = {}
         for p in group:
@@ -201,6 +236,7 @@ def rewrite(
     workflow: dict[str, Any],
     values: dict[str, Any],
     images: dict[str, str],
+    pack: Pack = HAYWIRE,
 ) -> dict[str, Any]:
     """The workflow to submit: placeholders replaced by the haywire node's values.
 
@@ -212,7 +248,7 @@ def rewrite(
     Raises:
         KeyError: an image placeholder has no image.
     """
-    interface = read_interface(workflow)
+    interface = read_interface(workflow, pack)
     literal: dict[str, Any] = {}
     for p in interface.parameters:
         literal[p.node_id] = values.get(p.name, p.default)
@@ -220,7 +256,10 @@ def rewrite(
     for p in interface.images:
         if p.name not in images:
             raise KeyError(f"no image for {p.name!r}")
-        loaders[p.node_id] = {"class_type": IMAGE_LOADER, "inputs": {"image": images[p.name]}}
+        loaders[p.node_id] = {
+            "class_type": pack.image_loader,
+            "inputs": {pack.image_loader_input: images[p.name]},
+        }
 
     out: dict[str, Any] = {}
     for node_id, node in workflow.items():

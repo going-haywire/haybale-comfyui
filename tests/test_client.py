@@ -8,6 +8,7 @@ from pathlib import Path
 
 import pytest
 
+from haybale_comfyui.runtime.placeholders import ETN, HAYWIRE, Pack
 from haybale_comfyui.runtime.client import (
     ComfyClient,
     PromptRejected,
@@ -72,15 +73,18 @@ def test_live_run_returns_the_image_and_reports_progress() -> None:
 
 
 @live
-def test_live_exchange_replays_to_a_new_subscriber() -> None:
-    workflow = {"1": {"class_type": "ETN_Parameter", "inputs": {"name": "p", "type": "text", "default": ""}}}
+@pytest.mark.parametrize("pack", [HAYWIRE, ETN], ids=["haywire", "etn"])
+def test_live_exchange_replays_to_a_new_subscriber(pack: Pack) -> None:
+    workflow = {"1": {"class_type": "Any", "inputs": {"name": "p"}}}
     with ComfyClient(str(LIVE_URL)) as publisher, ComfyClient(str(LIVE_URL)) as subscriber:
-        publisher.publish("haybale-comfyui test", workflow)
-        subscriber.subscribe()
+        if pack is HAYWIRE and publisher.protocol() is None:
+            pytest.skip("comfyui-haywire is not installed on the server")
+        publisher.publish("haybale-comfyui test", workflow, pack)
+        subscriber.subscribe(pack)
         try:
-            found = subscriber.wait_published(timeout=2.0)
+            found = subscriber.wait_published(timeout=2.0, pack=pack)
         finally:
-            subscriber.unsubscribe()
+            subscriber.unsubscribe(pack)
     mine = [p for p in found if p.publisher_id == publisher.client_id]
     assert mine
     assert mine[-1].workflow == workflow

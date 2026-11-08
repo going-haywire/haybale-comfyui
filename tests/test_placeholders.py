@@ -11,7 +11,7 @@ from pathlib import Path
 import pytest
 
 from haybale_comfyui.runtime.placeholders import (
-    IMAGE_LOADER,
+    ETN,
     Kind,
     missing_inputs,
     parse_default,
@@ -37,7 +37,7 @@ def img2img() -> dict:
 
 
 def test_img2img_interface(img2img: dict) -> None:
-    interface = read_interface(img2img)
+    interface = read_interface(img2img, ETN)
     assert interface.usable
     params = {p.name: p for p in interface.parameters}
     assert set(params) == {"Prompt", "Strength", "Seed"}
@@ -51,26 +51,26 @@ def test_img2img_interface(img2img: dict) -> None:
 
 
 def test_rewrite_replaces_placeholders(img2img: dict) -> None:
-    out = rewrite(img2img, {"Prompt": "a pear", "Seed": 9}, {"Source": "QUJD"})
+    out = rewrite(img2img, {"Prompt": "a pear", "Seed": 9}, {"Source": "QUJD"}, ETN)
     assert not {"10", "11", "12"} & set(out)
     assert out["2"]["inputs"]["text"] == "a pear"
     assert out["5"]["inputs"]["seed"] == 9
     assert out["5"]["inputs"]["denoise"] == 0.6  # default
-    assert out["20"] == {"class_type": IMAGE_LOADER, "inputs": {"image": "QUJD"}}
+    assert out["20"] == {"class_type": "ETN_LoadImageBase64", "inputs": {"image": "QUJD"}}
     assert out["4"]["inputs"]["pixels"] == ["20", 0]
     assert img2img["2"]["inputs"]["text"] == ["10", 0]  # input left untouched
 
 
 def test_rewrite_needs_every_image(img2img: dict) -> None:
     with pytest.raises(KeyError, match="Source"):
-        rewrite(img2img, {}, {})
+        rewrite(img2img, {}, {}, ETN)
 
 
 def test_browser_publish_without_link_is_flagged() -> None:
     workflows = published("browser_publish.json")
     browser = [w for w in workflows if "72" in w]
     first = browser[0]
-    interface = read_interface(first)
+    interface = read_interface(first, ETN)
     assert [p.name for p in interface.outputs] == ["72"]  # unnamed output → its node id
     info = {"ETN_KritaOutput": {"input": {"required": {"images": [], "x": [], "y": [], "name": []}}}}
     assert missing_inputs(first, info) == [
@@ -80,7 +80,7 @@ def test_browser_publish_without_link_is_flagged() -> None:
 
 def test_flattened_subgraph_ids_stay_strings() -> None:
     with_subgraph = next(w for w in published("browser_publish.json") if "74:62" in w)
-    out = rewrite(with_subgraph, {}, {})
+    out = rewrite(with_subgraph, {}, {}, ETN)
     assert "74:62" in out
     assert out["74:64"]["inputs"]["conditioning"] == ["74:67", 0]
 
@@ -97,7 +97,7 @@ def test_problems_make_it_unusable() -> None:
         "2": {"class_type": "ETN_Parameter", "inputs": {"name": "a-B", "type": "text", "default": ""}},
         "3": {"class_type": "ETN_KritaSelection", "inputs": {}},
     }
-    interface = read_interface(wf)
+    interface = read_interface(wf, ETN)
     assert not interface.usable
     assert any("two placeholders" in p for p in interface.problems)
     assert any("ETN_KritaSelection" in p for p in interface.problems)
@@ -109,8 +109,8 @@ def test_problems_make_it_unusable() -> None:
     [
         ("number", "0.5", 0.5),
         ("number", "", 0.0),
-        ("number (integer)", "3", 3),
-        ("number (integer)", "3.0", 3),
+        ("integer", "3", 3),
+        ("integer", "3.0", 3),
         ("toggle", "true", True),
         ("toggle", "False", False),
         ("text", "hi ", "hi "),
@@ -135,10 +135,52 @@ def test_live_rewritten_img2img_runs(img2img: dict) -> None:
     buf = io.BytesIO()
     Image.new("RGB", (256, 256), (200, 30, 30)).save(buf, format="PNG")
     seed = int.from_bytes(os.urandom(4), "big")
-    wf = rewrite(img2img, {"Seed": seed}, {"Source": base64.b64encode(buf.getvalue()).decode()})
+    wf = rewrite(img2img, {"Seed": seed}, {"Source": base64.b64encode(buf.getvalue()).decode()}, ETN)
     with ComfyClient(str(LIVE_URL)) as client:
         assert missing_inputs(wf, client.object_info()) == []
         tracker = client.run(wf)
     assert list(tracker.images) == ["Result"]
     png = tracker.images["Result"][0]
     assert int.from_bytes(png[16:20], "big") == 256
+
+
+HAYWIRE_WF = {
+    "1": {
+        "class_type": "HaywireParameter",
+        "inputs": {"name": "Steps", "type": "integer", "default": "4", "min": 1, "max": 50},
+    },
+    "2": {
+        "class_type": "HaywireParameter",
+        "inputs": {"name": "Prompt", "type": "prompt", "default": "a cat"},
+    },
+    "3": {"class_type": "HaywireImage", "inputs": {"name": "Source"}},
+    "4": {
+        "class_type": "KSampler",
+        "inputs": {"steps": ["1", 0], "positive": ["2", 0], "latent_image": ["3", 0]},
+    },
+    "5": {"class_type": "HaywireOutput", "inputs": {"images": ["4", 0], "name": "Result"}},
+}
+
+
+def test_haywire_pack_interface() -> None:
+    interface = read_interface(HAYWIRE_WF)
+    assert interface.usable
+    assert [(p.name, p.type, p.default) for p in interface.parameters] == [
+        ("Steps", "integer", 4),
+        ("Prompt", "prompt", "a cat"),
+    ]
+    assert [p.port_id for p in interface.images] == ["image_source"]
+    assert [p.name for p in interface.outputs] == ["Result"]
+
+
+def test_haywire_pack_rewrite() -> None:
+    out = rewrite(HAYWIRE_WF, {"Steps": 8}, {"Source": "QUJD"})
+    assert out["4"]["inputs"]["steps"] == 8
+    assert out["4"]["inputs"]["positive"] == "a cat"
+    assert out["3"] == {"class_type": "HaywireLoadImage", "inputs": {"data": "QUJD"}}
+
+
+def test_etn_nodes_are_not_placeholders_of_the_haywire_pack(img2img: dict) -> None:
+    interface = read_interface(img2img)
+    assert interface.parameters == []
+    assert any("HaywireOutput" in p for p in interface.problems)

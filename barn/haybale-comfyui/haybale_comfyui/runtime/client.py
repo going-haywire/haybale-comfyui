@@ -19,10 +19,8 @@ import httpx
 from websockets.exceptions import ConnectionClosed
 from websockets.sync.client import ClientConnection, connect
 
+from haybale_comfyui.runtime.placeholders import HAYWIRE, Pack
 from haybale_comfyui.runtime.tracker import Outcome, RunTracker
-
-#: Route prefix of the workflow exchange in comfyui-tooling-nodes (Option A, design note §5).
-ETN_EXCHANGE = "/api/etn/workflow"
 
 #: How long one websocket wait lasts before the cancel flag is checked again.
 POLL_SECONDS = 0.1
@@ -158,16 +156,21 @@ class ComfyClient:
         self._request("POST", "/interrupt", json={"prompt_id": prompt_id})
         self._request("POST", "/queue", json={"delete": [prompt_id]})
 
-    def subscribe(self, prefix: str = ETN_EXCHANGE) -> None:
-        self._json("POST", f"{prefix}/subscribe", json={"client_id": self.client_id})
+    def protocol(self) -> int | None:
+        """The comfyui-haywire protocol version, or ``None`` when the pack is not installed."""
+        r = self._request("GET", "/api/haywire/version")
+        return int(r.json()["protocol"]) if r.status_code == 200 else None
 
-    def unsubscribe(self, prefix: str = ETN_EXCHANGE) -> None:
-        self._json("POST", f"{prefix}/unsubscribe", json={"client_id": self.client_id})
+    def subscribe(self, pack: Pack = HAYWIRE) -> None:
+        self._json("POST", f"{pack.exchange_prefix}/subscribe", json={"client_id": self.client_id})
 
-    def publish(self, name: str, workflow: dict[str, Any], prefix: str = ETN_EXCHANGE) -> None:
+    def unsubscribe(self, pack: Pack = HAYWIRE) -> None:
+        self._json("POST", f"{pack.exchange_prefix}/unsubscribe", json={"client_id": self.client_id})
+
+    def publish(self, name: str, workflow: dict[str, Any], pack: Pack = HAYWIRE) -> None:
         """Publish a workflow under this client's id (tests and tools; ComfyUI's page does it too)."""
         body = {"name": name, "client_id": self.client_id, "workflow": workflow}
-        self._json("POST", f"{prefix}/publish", json=body)
+        self._json("POST", f"{pack.exchange_prefix}/publish", json=body)
 
     # ── websocket ─────────────────────────────────────────────────────────
 
@@ -183,15 +186,15 @@ class ComfyClient:
             except ConnectionClosed as exc:
                 raise ComfyError(f"ComfyUI closed the connection: {exc}") from exc
 
-    def wait_published(self, timeout: float) -> list[Published]:
-        """Collect ``etn_workflow_published`` messages until *timeout* passes with none."""
+    def wait_published(self, timeout: float, pack: Pack = HAYWIRE) -> list[Published]:
+        """Collect the pack's published-workflow messages until *timeout* passes with none."""
         found: list[Published] = []
         for msg in self.messages(timeout=timeout):
             if msg is None:
                 return found
             if isinstance(msg, str):
                 data = json.loads(msg)
-                if data.get("type") == "etn_workflow_published":
+                if data.get("type") == pack.published_message:
                     d, pub = data["data"], data["data"].get("publisher") or {}
                     found.append(Published(str(pub.get("name")), str(pub.get("id")), d["workflow"]))
         return found
