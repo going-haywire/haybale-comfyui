@@ -27,6 +27,8 @@ dependencies = [
 [project.entry-points."haywire.libraries"]
 haybale-comfyui = "haybale_comfyui:Library"
 
+[project.urls]
+Source = "https://github.com/going-haywire/haybale-comfyui"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
