@@ -11,35 +11,35 @@ members = [ "barn/*",]
 workspace = true
 
 [tool.uv.sources.haywire-studio]
-path = "/home/maybites/Work/going-haywire/haywire-repo/packages/haywire-studio"
+path = "../haywire-repo/packages/haywire-studio"
 editable = true
 
 [tool.uv.sources.haywire-core]
-path = "/home/maybites/Work/going-haywire/haywire-repo/packages/haywire-core"
+path = "../haywire-repo/packages/haywire-core"
 editable = true
 
 [tool.uv.sources.haybale-core]
-path = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-core"
+path = "../haywire-repo/barn/haybale-core"
 editable = true
 
 [tool.uv.sources.haybale-studio]
-path = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-studio"
+path = "../haywire-repo/barn/haybale-studio"
 editable = true
 
 [tool.uv.sources.haybale-marketplace]
-path = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-marketplace"
+path = "../haywire-repo/barn/haybale-marketplace"
 editable = true
 
 [tool.uv.sources.haybale-image]
-path = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-image"
+path = "../haywire-repo/barn/haybale-image"
 editable = true
 
 [tool.uv.sources.haybale-graph-editor]
-path = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-graph-editor"
+path = "../haywire-repo/barn/haybale-graph-editor"
 editable = true
 
 [tool.uv.sources.haybale-haystack]
-path = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-haystack"
+path = "../haywire-repo/barn/haybale-haystack"
 editable = true
 
 [dependency-groups]

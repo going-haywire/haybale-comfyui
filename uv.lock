@@ -563,8 +563,8 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "haybale-image", editable = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-image" },
-    { name = "haywire-core", editable = "/home/maybites/Work/going-haywire/haywire-repo/packages/haywire-core" },
+    { name = "haybale-image", editable = "../haywire-repo/barn/haybale-image" },
+    { name = "haywire-core", editable = "../haywire-repo/packages/haywire-core" },
     { name = "httpx", specifier = ">=0.27" },
     { name = "numpy" },
     { name = "pillow" },
@@ -596,13 +596,13 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "haybale-comfyui", editable = "barn/haybale-comfyui" },
-    { name = "haybale-core", editable = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-core" },
-    { name = "haybale-graph-editor", editable = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-graph-editor" },
-    { name = "haybale-haystack", editable = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-haystack" },
-    { name = "haybale-image", editable = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-image" },
-    { name = "haybale-marketplace", editable = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-marketplace" },
-    { name = "haybale-studio", editable = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-studio" },
-    { name = "haywire-studio", editable = "/home/maybites/Work/going-haywire/haywire-repo/packages/haywire-studio" },
+    { name = "haybale-core", editable = "../haywire-repo/barn/haybale-core" },
+    { name = "haybale-graph-editor", editable = "../haywire-repo/barn/haybale-graph-editor" },
+    { name = "haybale-haystack", editable = "../haywire-repo/barn/haybale-haystack" },
+    { name = "haybale-image", editable = "../haywire-repo/barn/haybale-image" },
+    { name = "haybale-marketplace", editable = "../haywire-repo/barn/haybale-marketplace" },
+    { name = "haybale-studio", editable = "../haywire-repo/barn/haybale-studio" },
+    { name = "haywire-studio", editable = "../haywire-repo/packages/haywire-studio" },
 ]
 
 [package.metadata.requires-dev]
@@ -614,23 +614,25 @@ dev = [
 
 [[package]]
 name = "haybale-core"
-version = "0.3.4"
-source = { editable = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-core" }
+version = "0.4.2"
+source = { editable = "../haywire-repo/barn/haybale-core" }
 dependencies = [
     { name = "haywire-core" },
+    { name = "nicegui" },
     { name = "typing-extensions" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "haywire-core", editable = "../haywire-repo/packages/haywire-core" },
+    { name = "nicegui", specifier = ">=3.18.0" },
     { name = "typing-extensions" },
 ]
 
 [[package]]
 name = "haybale-graph-editor"
-version = "0.3.4"
-source = { editable = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-graph-editor" }
+version = "0.4.2"
+source = { editable = "../haywire-repo/barn/haybale-graph-editor" }
 dependencies = [
     { name = "haywire-core" },
     { name = "nicegui" },
@@ -644,8 +646,8 @@ requires-dist = [
 
 [[package]]
 name = "haybale-haystack"
-version = "0.3.4"
-source = { editable = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-haystack" }
+version = "0.4.2"
+source = { editable = "../haywire-repo/barn/haybale-haystack" }
 dependencies = [
     { name = "haybale-graph-editor" },
     { name = "haybale-studio" },
@@ -665,8 +667,8 @@ requires-dist = [
 
 [[package]]
 name = "haybale-image"
-version = "0.3.4"
-source = { editable = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-image" }
+version = "0.4.2"
+source = { editable = "../haywire-repo/barn/haybale-image" }
 dependencies = [
     { name = "fastapi" },
     { name = "haywire-core" },
@@ -692,8 +694,8 @@ provides-extras = ["torch"]
 
 [[package]]
 name = "haybale-marketplace"
-version = "0.3.4"
-source = { editable = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-marketplace" }
+version = "0.4.2"
+source = { editable = "../haywire-repo/barn/haybale-marketplace" }
 dependencies = [
     { name = "haybale-studio" },
     { name = "haywire-core" },
@@ -711,8 +713,8 @@ requires-dist = [
 
 [[package]]
 name = "haybale-studio"
-version = "0.3.4"
-source = { editable = "/home/maybites/Work/going-haywire/haywire-repo/barn/haybale-studio" }
+version = "0.4.2"
+source = { editable = "../haywire-repo/barn/haybale-studio" }
 dependencies = [
     { name = "haywire-core" },
     { name = "haywire-studio" },
@@ -728,8 +730,8 @@ requires-dist = [
 
 [[package]]
 name = "haywire-core"
-version = "0.3.4"
-source = { editable = "/home/maybites/Work/going-haywire/haywire-repo/packages/haywire-core" }
+version = "0.4.2"
+source = { editable = "../haywire-repo/packages/haywire-core" }
 dependencies = [
     { name = "attrs" },
     { name = "cattrs" },
@@ -763,8 +765,8 @@ requires-dist = [
 
 [[package]]
 name = "haywire-studio"
-version = "0.3.4"
-source = { editable = "/home/maybites/Work/going-haywire/haywire-repo/packages/haywire-studio" }
+version = "0.4.2"
+source = { editable = "../haywire-repo/packages/haywire-studio" }
 dependencies = [
     { name = "cryptography" },
     { name = "fastapi" },
