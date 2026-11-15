@@ -49,10 +49,20 @@ dev = ["pytest>=8", "pytest-timeout", "ruff==0.12.12"]
 line-length = 109
 
 [tool.ruff.lint]
-extend-select = ["E501", "PT", "B", "TID252"]
+extend-select = ["E501", "PT", "B", "TID251", "TID252"]
 
 [tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "all"
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"haywire.core".msg = "Import from haywire.api or haywire.api.workbench; this module is internal and may change."
+"haywire.ui".msg = "Import from haywire.api or haywire.api.workbench; this module is internal and may change."
+"haywire.barn".msg = "Import from haywire.api or haywire.api.workbench; this module is internal and may change."
+
+[tool.ruff.lint.per-file-ignores]
+# The test fixtures build a library system from haywire's DI internals, which the
+# Author API does not cover. Library code under barn/ stays on the Author API.
+"tests/conftest.py" = ["TID251"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -22,11 +22,10 @@ def test_library_settings_have_their_defaults(library_system: Any) -> None:
 
 @pytest.mark.integration
 def test_panel_is_registered_under_barns(library_system: Any) -> None:
-    from haywire.barn.builtin.surfaces import Barns
-    from haywire.ui.panel.registry import PanelRegistry
+    from haywire.api.workbench import BarnsSurface, PanelRegistry
 
     panel_cls = importlib.import_module(PANEL).ComfyUISettingsPanel
-    assert panel_cls.class_identity.surface is Barns
+    assert panel_cls.class_identity.surface is BarnsSurface
     panels = library_system.injector.get(PanelRegistry)
     assert panels.get(panel_cls.class_identity.registry_key) is not None
 

@@ -4,8 +4,7 @@ from __future__ import annotations
 
 import os
 
-from haywire.barn.builtin.types import FLOAT, STRING
-from haywire.core.settings import LibrarySettings, setting, settings
+from haywire.api import FLOAT, STRING, LibrarySettings, setting, settings
 
 #: Address of a ComfyUI started with its defaults.
 DEFAULT_URL = "http://127.0.0.1:8188"
