@@ -550,7 +550,7 @@ wheels = [
 
 [[package]]
 name = "haybale-comfyui"
-version = "0.0.2"
+version = "0.0.3"
 source = { editable = "barn/haybale-comfyui" }
 dependencies = [
     { name = "haybale-image" },
