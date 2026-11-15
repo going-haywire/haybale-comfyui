@@ -5,14 +5,27 @@ from __future__ import annotations
 import threading
 from typing import Any
 
-from haywire.barn.builtin.progress import ProgressSettings, progress_field
-from haywire.barn.builtin.types import BOOL, CHOICES
-from haywire.barn.builtin.widget_keys import BUTTON_WIDGET
-from haywire.core.execution.execution_context import ExecutionContext
-from haywire.core.node import BaseNode, NodeType, node
-from haywire.core.node.node_warning import NodeWarning
-from haywire.core.settings import NodeSettings, Promotable, bag, setting
-from haywire.core.types.enums import PortType
+from haywire.api import (
+    BOOL,
+    BUTTON_WIDGET,
+    CHOICES,
+    FLOAT,
+    INT,
+    STRING,
+    BaseNode,
+    ExecutionContext,
+    NodeSettings,
+    NodeType,
+    NodeWarning,
+    PortType,
+    ProgressSettings,
+    Promotable,
+    SelectWidget,
+    bag,
+    node,
+    progress_field,
+    setting,
+)
 
 from haybale_comfyui.runtime.client import Cancelled, ComfyClient, ComfyError
 from haybale_comfyui.runtime.directory import Entry, directory_for
@@ -271,9 +284,6 @@ class ComfyUIWorkflowNode(BaseNode):
 
     @staticmethod
     def _parameter_spec(p: Placeholder, options: list[str]) -> Any:
-        from haywire.barn.builtin.types import FLOAT, INT, STRING
-        from haywire.barn.builtin.widgets import SelectWidget
-
         common = {"label": p.name, "description": f"Haywire Parameter {p.name!r} ({p.type})"}
         if p.type == "number":
             return FLOAT.as_inlet(p.port_id, default=float(p.default), **common)

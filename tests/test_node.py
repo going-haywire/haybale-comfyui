@@ -34,7 +34,7 @@ def port_ids(node: Any) -> set[str]:
 @pytest.mark.integration
 def test_new_node_has_only_the_image_outlet_and_refuses_to_run(graph: Any) -> None:
     """A data node needs an outlet from the start (structural validation)."""
-    from haywire.core.execution.execution_context import ExecutionContext
+    from haywire.api import ExecutionContext
 
     node = add_node(graph, *NODE)
     assert {pid for pid in port_ids(node) if pid.startswith(("param_", "image_", "out_"))} == {"out_image"}
@@ -115,7 +115,7 @@ def test_combo_options_both_formats() -> None:
 @pytest.mark.skipif(not LIVE_URL, reason="set COMFYUI_URL to run against a ComfyUI server")
 def test_live_worker_returns_the_image(graph: Any) -> None:
     from haybale_image.value import ImageValue
-    from haywire.core.execution.execution_context import ExecutionContext
+    from haywire.api import ExecutionContext
 
     from haybale_comfyui.runtime.client import ComfyClient
     from haybale_comfyui.settings.comfyui_settings import ComfyUISettings

@@ -17,20 +17,19 @@ Add your custom components in the corresponding folders:
 
 from pathlib import Path
 
-from haywire.core.library.base import BaseLibrary
-from haywire.core.library.decorator import library
-from haywire.core.adapter.registry import AdapterRegistry
-from haywire.core.macro.registry import MacroRegistry
-from haywire.core.node.registry import NodeRegistry
-from haywire.core.settings.registry import SettingsRegistry
-from haywire.core.types.registry import TypeRegistry
-from haywire.core.state import LibraryStateRegistry
-
-from haywire.ui.editor.registry import EditorTypeRegistry
-from haywire.ui.panel.registry import PanelRegistry
-from haywire.ui.skin.registry import SkinRegistry
-from haywire.ui.themes.registry import ThemeRegistry
-from haywire.ui.widget.registry import WidgetRegistry
+from haywire.api import (
+    AdapterRegistry,
+    BaseLibrary,
+    MacroRegistry,
+    NodeRegistry,
+    SettingsRegistry,
+    SkinRegistry,
+    ThemeRegistry,
+    TypeRegistry,
+    WidgetRegistry,
+    library,
+)
+from haywire.api.workbench import EditorRegistry, PanelRegistry, StateRegistry
 
 
 @library(
@@ -50,7 +49,7 @@ class Library(BaseLibrary):
 
         self.add_folder_to_registry(
             folder_path=str(base_path / "states"),
-            registry_cls=LibraryStateRegistry,
+            registry_cls=StateRegistry,
         )
 
         self.add_folder_to_registry(
@@ -95,7 +94,7 @@ class Library(BaseLibrary):
 
         self.add_folder_to_registry(
             folder_path=str(base_path / "editors"),
-            registry_cls=EditorTypeRegistry,
+            registry_cls=EditorRegistry,
         )
 
     def validate(self) -> bool:
