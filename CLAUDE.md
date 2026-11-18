@@ -13,6 +13,7 @@ the step-by-step is the `haywire-workflow` skill, which comes with its hooks in 
 this session runs without the skill and without the hooks that guard git and merges:
 
 ```sh
+claude plugin marketplace add going-haywire/.github   # once per machine
 claude plugin install haywire-dev@going-haywire --scope project
 ```
 

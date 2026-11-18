@@ -1,4 +1,7 @@
 {
+  "enabledPlugins": {
+    "haywire-dev@going-haywire": true
+  },
   "extraKnownMarketplaces": {
     "going-haywire": {
       "source": {
@@ -7,8 +10,5 @@
       },
       "autoUpdate": true
     }
-  },
-  "enabledPlugins": {
-    "haywire-dev@going-haywire": true
   }
 }
