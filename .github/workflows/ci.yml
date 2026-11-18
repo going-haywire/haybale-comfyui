@@ -1,0 +1,22 @@
+# Lint and tests against core's master, on every pull request and on master.
+# The steps live in the org's reusable workflow (going-haywire/.github); a draft PR runs
+# on Linux only, a ready one adds macOS. A newer push cancels an older run on the branch.
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: going-haywire/.github/.github/workflows/library-ci.yml@e86a50ca0d846f4ac9e48dc25f68527b3cddd877 # 2026-11-18, going-haywire/.github#1

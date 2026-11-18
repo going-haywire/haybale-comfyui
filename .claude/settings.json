@@ -1,0 +1,14 @@
+{
+  "enabledPlugins": {
+    "haywire-dev@going-haywire": true
+  },
+  "extraKnownMarketplaces": {
+    "going-haywire": {
+      "source": {
+        "source": "github",
+        "repo": "going-haywire/.github"
+      },
+      "autoUpdate": true
+    }
+  }
+}

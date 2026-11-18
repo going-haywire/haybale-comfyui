@@ -1,0 +1,16 @@
+# The same checks every night, on Linux and macOS, against core's master as it is then:
+# a red run means a core change broke this library. Core's release view reads the latest
+# result (release_sweep.py floors).
+name: nightly
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: going-haywire/.github/.github/workflows/library-ci.yml@e86a50ca0d846f4ac9e48dc25f68527b3cddd877 # 2026-11-18, going-haywire/.github#1
