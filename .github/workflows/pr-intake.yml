@@ -1,0 +1,18 @@
+# Labels and welcomes pull requests: `needs introduction`, `agent files`. The steps live in
+# the org's reusable workflow (going-haywire/.github). It runs from master's copy of this
+# file and never checks out the pull request's code.
+name: PR intake
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions: {}
+
+jobs:
+  intake:
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+    uses: going-haywire/.github/.github/workflows/pr-intake.yml@71dabceed196ee19f383733415234830f82693ff # going-haywire/.github#1 (unmerged)
