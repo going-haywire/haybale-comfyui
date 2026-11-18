@@ -3,12 +3,17 @@ name: Publish
 # Publishes every barn/* library to PyPI on a version tag, when the root
 # pyproject.toml declares  [tool.haywire.marketstall] distribute = "pypi".
 # With any other value the run ends green without publishing.
+# A push to the default branch that changes the versions (the merge of a release PR)
+# tests, builds, tags the merge commit and publishes in this one run.
 # To retry a failed run: gh workflow run publish.yml --ref vX.Y.Z
 
 on:
   push:
     tags:
       - 'v*.*.*'
+    branches:
+      - main
+      - master
   workflow_dispatch:
 
 env:
@@ -21,10 +26,17 @@ jobs:
     outputs:
       enabled: ${{ steps.plan.outputs.enabled }}
       matrix: ${{ steps.plan.outputs.matrix }}
+      standalone: ${{ steps.plan.outputs.standalone }}
+      tag: ${{ steps.plan.outputs.tag }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Decide what to publish
         id: plan
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          BEFORE_SHA: ${{ github.event.before }}
         run: python3 .github/publish_plan.py
 
   build:
@@ -42,32 +54,85 @@ jobs:
         with:
           enable-cache: true
       - run: uv python install ${{ env.PYTHON_VERSION }}
-      # Adapted by hand (as in haybale-spandrel): the root pyproject.toml is a dev-only
-      # workspace whose [tool.uv.sources] point at a local haywire-repo checkout that does
-      # not exist in CI, so nothing here loads it (no uv sync / uv run at the root).
+      # The tests need a root that resolves its own dependencies. A --dev project's root
+      # links to a haywire checkout by path, which a runner does not have: run them locally.
+      - name: Run tests
+        if: needs.guard.outputs.standalone == 'true' && hashFiles('tests/**') != ''
+        run: |
+          uv sync --frozen
+          uv run --frozen pytest -q
       - name: Build wheel and sdist
-        working-directory: barn/${{ matrix.lib.dist }}
-        run: |
-          rm -rf "${GITHUB_WORKSPACE}/dist"
-          uv build --out-dir "${GITHUB_WORKSPACE}/dist"
-      # Installing the wheel into a clean venv resolves its dependencies against PyPI,
-      # which a local editable checkout never checks. The tests then run against it;
-      # those that need a ComfyUI server skip without COMFYUI_URL.
-      - name: Test the built wheel
-        run: |
-          uv venv --python ${{ env.PYTHON_VERSION }} /tmp/check
-          VIRTUAL_ENV=/tmp/check uv pip install dist/*.whl pytest pytest-timeout
-          if [ -d tests ]; then /tmp/check/bin/python -m pytest -q -p no:cacheprovider; fi
+        working-directory: ${{ matrix.lib.path }}
+        run: uv build --out-dir "${GITHUB_WORKSPACE}/dist"
       - uses: actions/upload-artifact@v4
         with:
           name: dist-${{ matrix.lib.dist }}
           path: dist/
           if-no-files-found: error
 
-  publish:
-    name: Publish ${{ matrix.lib.dist }}
+  # A clean environment resolves every dependency from PyPI, as a consumer's install does;
+  # the project's path sources and lock play no part. The wheels go in together, so
+  # libraries released side by side find each other.
+  smoke:
+    name: Install and load the wheels
     needs: [guard, build]
     if: needs.guard.outputs.enabled == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: dist-*
+          path: dist/
+          merge-multiple: true
+      - uses: astral-sh/setup-uv@v3
+      - name: Install the wheels
+        run: |
+          uv venv --python "$PYTHON_VERSION" "$RUNNER_TEMP/smoke"
+          VIRTUAL_ENV="$RUNNER_TEMP/smoke" uv pip install dist/*.whl
+      - name: Load every library as the studio does
+        env:
+          MATRIX: ${{ needs.guard.outputs.matrix }}
+        run: |
+          "$RUNNER_TEMP/smoke/bin/python" - <<'PY'
+          import importlib.metadata
+          import json
+          import os
+
+          for lib in json.loads(os.environ["MATRIX"]):
+              dist = importlib.metadata.distribution(lib["dist"])
+              points = [ep for ep in dist.entry_points if ep.group == "haywire.libraries"]
+              if not points:
+                  raise SystemExit(f"{lib['dist']} declares no haywire.libraries entry point")
+              for point in points:
+                  point.load()
+                  print(f"{lib['dist']}: loaded {point.name} = {point.value}")
+          PY
+
+  tag:
+    name: Tag ${{ needs.guard.outputs.tag }}
+    needs: [guard, build, smoke]
+    if: needs.guard.outputs.enabled == 'true' && needs.guard.outputs.tag != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tag the merge commit
+        env:
+          TAG: ${{ needs.guard.outputs.tag }}
+        run: |
+          git tag "$TAG" "$GITHUB_SHA"
+          git push origin "refs/tags/$TAG"
+
+  publish:
+    name: Publish ${{ matrix.lib.dist }}
+    needs: [guard, build, smoke, tag]
+    if: >-
+      ${{ !cancelled()
+      && needs.guard.outputs.enabled == 'true'
+      && needs.build.result == 'success'
+      && needs.smoke.result == 'success'
+      && needs.tag.result != 'failure' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
