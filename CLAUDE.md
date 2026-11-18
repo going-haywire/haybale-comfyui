@@ -8,7 +8,16 @@ This is a going-haywire library and follows core's process: branches and pull re
 CI before every merge, a protected `master`, releases through a release pull request. The
 rules are in the org's [CONTRIBUTING.md](https://github.com/going-haywire/.github/blob/main/CONTRIBUTING.md)
 and core's [CONTRIBUTING.md](https://github.com/going-haywire/haywire/blob/master/CONTRIBUTING.md);
-the step-by-step is core's `haywire-workflow` skill.
+the step-by-step is the `haywire-workflow` skill, which comes with its hooks in the
+`haywire-dev` plugin. `.claude/settings.json` enables it; install it once per clone, or
+this session runs without the skill and without the hooks that guard git and merges:
+
+```sh
+claude plugin install haywire-dev@going-haywire --scope project
+```
+
+Load the skill (`haywire-dev:haywire-workflow`) before the first branch, commit, push or
+`gh pr` command of any task.
 
 - **Layout.** This is a development project: `[tool.uv.sources]` reaches core at
   `../haywire-repo`, so this repository is cloned beside core. Its own environment runs its
