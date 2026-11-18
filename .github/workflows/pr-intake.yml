@@ -15,4 +15,4 @@ jobs:
       contents: read
       issues: write
       pull-requests: write
-    uses: going-haywire/.github/.github/workflows/pr-intake.yml@71dabceed196ee19f383733415234830f82693ff # going-haywire/.github#1 (unmerged)
+    uses: going-haywire/.github/.github/workflows/pr-intake.yml@e86a50ca0d846f4ac9e48dc25f68527b3cddd877 # 2026-11-18, going-haywire/.github#1
