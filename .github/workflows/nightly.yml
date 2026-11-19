@@ -1,6 +1,6 @@
 # The same checks every night, on Linux and macOS, against core's master as it is then:
 # a red run means a core change broke this library. Core's release view reads the latest
-# result (release_sweep.py floors).
+# result (`release_sweep.py nightly`).
 name: nightly
 
 on:
