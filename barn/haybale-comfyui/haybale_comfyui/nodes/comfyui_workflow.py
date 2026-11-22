@@ -20,7 +20,7 @@ from haywire.api import (
     PortType,
     ProgressSettings,
     Promotable,
-    SelectWidget,
+    MenuWidget,
     bag,
     node,
     progress_field,
@@ -292,7 +292,7 @@ class ComfyUIWorkflowNode(BaseNode):
         if p.type == "toggle":
             return BOOL.as_inlet(p.port_id, default=bool(p.default), **common)
         if p.type == "choice" and options:
-            widget = SelectWidget.config(properties={"options": options, "new_value_mode": "add-unique"})
+            widget = MenuWidget.config(properties={"options": options, "new_value_mode": "add-unique"})
             return STRING.as_inlet(p.port_id, default=str(p.default or options[0]), widget=widget, **common)
         return STRING.as_inlet(p.port_id, default=str(p.default or ""), **common)
 
