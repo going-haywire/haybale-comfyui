@@ -129,7 +129,7 @@
               },
               "store_strategy": 2,
               "color": "#ffc107",
-              "widget_key": "haywire-core:widget:SelectWidget",
+              "widget_key": "haywire-core:widget:MenuWidget",
               "widget_config": {
                 "properties": {
                   "options": [
@@ -594,7 +594,7 @@
     },
     "BeginPlayNode_772866a5": {
       "node_id": "BeginPlayNode_772866a5",
-      "registry_key": "haybale-core:node:BeginPlayNode",
+      "registry_key": "haybale-core:node:BeginPlayEventNode",
       "node_data": {
         "node_id": "BeginPlayNode_772866a5",
         "ports": {
@@ -670,14 +670,14 @@
         },
         "store": {},
         "identity": {
-          "registry_id": "BeginPlayNode",
-          "registry_key": "haybale-core:node:BeginPlayNode",
+          "registry_id": "BeginPlayEventNode",
+          "registry_key": "haybale-core:node:BeginPlayEventNode",
           "label": "Begin Player",
           "description": "Triggered once when execution starts",
           "deprecation_warning": "",
           "hidden": false,
-          "class_name": "BeginPlayNode",
-          "module": "haybale_core.nodes.events.begin_play",
+          "class_name": "BeginPlayEventNode",
+          "module": "haybale_core.nodes.events.begin_play_event",
           "tags": [],
           "search_tags": [
             "start",
