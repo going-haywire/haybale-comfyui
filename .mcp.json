@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "farmhand": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--frozen",
+        "--quiet",
+        "haywire",
+        "farmhand",
+        "bridge"
+      ]
+    }
+  }
+}

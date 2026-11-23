@@ -76,3 +76,8 @@ timeout = 120
 # Released wheels go to PyPI, so every marketstall row carries
 # `haybale-comfyui==<version>` rather than a git clone spec.
 distribute = "pypi"
+
+[tool.haywire.agents]
+# The docs folder whose `serve: developer` pages the Farmhand bridge serves to agent
+# sessions here: core's, through the core clone beside this repository.
+developer-docs = "../haywire-repo/docs"

@@ -40,3 +40,8 @@ htmlcov/
 # installs your library — haywire share publishes by git URL, so consumers get
 # a clone of this repo, not a built package. If a pattern is only meant for the
 # repo root, anchor it with a leading slash: /build/ not build/.
+
+# Machine-local studio files (the worktree setup's port, `haywire studio start`)
+.haywire/settings.json
+.haywire/studio.*
+.haywire/.gitignore

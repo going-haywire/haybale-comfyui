@@ -1,14 +1,64 @@
 {
   "enabledPlugins": {
-    "haywire-dev@going-haywire": true
+    "haywire-dev@going-haywire": false
   },
-  "extraKnownMarketplaces": {
-    "going-haywire": {
-      "source": {
-        "source": "github",
-        "repo": "going-haywire/.github"
-      },
-      "autoUpdate": true
-    }
-  }
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -d \"$CLAUDE_PROJECT_DIR/../haywire-repo/dev/hooks\" ] || echo \"Core is not beside this folder, so the workflow hooks and the Farmhand bridge cannot run: clone going-haywire/haywire as ../haywire-repo, or in a worktree run its setup (t3.json's *Worktree setup*).\""
+          },
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/../haywire-repo/dev/hooks/session-role.sh"
+          },
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/../haywire-repo/dev/hooks/session-place.sh",
+            "timeout": 330
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/../haywire-repo/dev/hooks/block-dangerous-git.sh"
+          },
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/../haywire-repo/dev/hooks/require-workflow-read.sh"
+          },
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/../haywire-repo/dev/hooks/guard-pr-merge.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Read|ReadMcpResourceTool",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/../haywire-repo/dev/hooks/mark-workflow-read.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "mcp__farmhand"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "farmhand"
+  ]
 }

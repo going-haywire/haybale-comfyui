@@ -8,24 +8,18 @@ This is a going-haywire library and follows core's process: branches and pull re
 CI before every merge, a protected `master`, releases through a release pull request. The
 rules are in the org's [CONTRIBUTING.md](https://github.com/going-haywire/.github/blob/main/CONTRIBUTING.md)
 and core's [CONTRIBUTING.md](https://github.com/going-haywire/haywire/blob/master/CONTRIBUTING.md);
-the step-by-step is the `haywire-workflow` skill, which comes with its hooks in the
-`haywire-dev` plugin. `.claude/settings.json` enables it; install it once per clone, or
-this session runs without the skill and without the hooks that guard git and merges:
-
-```sh
-claude plugin marketplace add going-haywire/.github   # once per machine
-claude plugin install haywire-dev@going-haywire --scope project
-```
-
-Load the skill (`haywire-dev:haywire-workflow`) before the first branch, commit, push or
-`gh pr` command of any task.
+the step-by-step is core's workflow page, which this repository's committed files bring
+into every session: the Farmhand bridge (`.mcp.json`) serves it as
+`farmhand://dev/collaboration/workflow.md`, and `.claude/settings.json` runs core's hooks
+from `../haywire-repo/dev/hooks/`. Read it (or `../haywire-repo/docs/collaboration/workflow.md`)
+before the first branch, commit, push or `gh pr` command of any task; the hooks refuse a
+commit until this session has.
 
 - **Layout.** This is a development project: `[tool.uv.sources]` reaches core at
   `../haywire-repo`, so this repository is cloned beside core. Its own environment runs its
   tests; the full studio with every library runs from the umbrella environment
   ([ADR 0081](https://github.com/going-haywire/haywire/blob/master/docs/adr/0081-libraries-from-other-repositories-run-from-an-umbrella-environment.md)).
-  A worktree goes beside the repositories (`git worktree add ../haybale-comfyui-<name>`),
-  never elsewhere, or the relative paths break.
+  A worktree can be anywhere: its setup (t3.json's *Worktree setup*) links core beside it.
 - **Checks** before each commit: `uv run --frozen ruff check .`, `uv run --frozen ruff
   format --check .`, `uv run --frozen pytest`. CI runs them against core's `master` on every
   pull request and every night.
