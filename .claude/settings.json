@@ -1,7 +1,4 @@
 {
-  "enabledPlugins": {
-    "haywire-dev@going-haywire": false
-  },
   "hooks": {
     "SessionStart": [
       {
