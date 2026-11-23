@@ -1,0 +1,24 @@
+{
+  "$schema": "https://t3.codes/schema/t3.json",
+  "scripts": [
+    {
+      "name": "Worktree setup",
+      "command": "python3 \"$(git rev-parse --path-format=absolute --git-common-dir)/../../haywire-repo/dev/scripts/worktree_setup.py\"",
+      "icon": "configure",
+      "runOnWorktreeCreate": true,
+      "async": false
+    },
+    {
+      "name": "Finish merged task",
+      "command": "main=$(cd \"$(git rev-parse --path-format=absolute --git-common-dir)/..\" && pwd -P); here=$(pwd -P); [ \"$here\" = \"$main\" ] && exit 0; b=$(git branch --show-current); cd \"$main\" || exit 1; if [ -n \"$b\" ]; then python3 ../haywire-repo/dev/scripts/finish.py \"$b\"; else git worktree remove \"$here\"; fi",
+      "icon": "configure",
+      "runOnSettle": true
+    },
+    {
+      "name": "Haywire studio",
+      "command": "uv run --frozen haywire studio start --browser",
+      "icon": "play",
+      "runOnWorktreeCreate": false
+    }
+  ]
+}
