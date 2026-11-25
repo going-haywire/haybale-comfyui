@@ -32,16 +32,8 @@ htmlcov/
 .idea/
 .vscode/
 
-# Haywire per-session UI state (open graph, pan/zoom) — not project state
-.haywire/workspace_state.json
-
 # ── Before you add a pattern ────────────────────────────────────────────────
 # Anything ignored inside barn/<your-library>/ will be MISSING for everyone who
 # installs your library — haywire share publishes by git URL, so consumers get
 # a clone of this repo, not a built package. If a pattern is only meant for the
 # repo root, anchor it with a leading slash: /build/ not build/.
-
-# Machine-local studio files (the worktree setup's port, `haywire studio start`)
-.haywire/settings.json
-.haywire/studio.*
-.haywire/.gitignore
