@@ -19,4 +19,4 @@ permissions:
 
 jobs:
   ci:
-    uses: going-haywire/.github/.github/workflows/library-ci.yml@765eff20fb347f0978aef2aeb219121b7e4bf716 # v1.0.0
+    uses: going-haywire/.github/.github/workflows/library-ci.yml@64e0d059039d269f4ec4ab13822e7a348e8e6657 # v1.1.0

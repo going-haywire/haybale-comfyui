@@ -566,8 +566,8 @@ requires-dist = [
     { name = "haybale-image", editable = "../haywire-repo/barn/haybale-image" },
     { name = "haywire-core", editable = "../haywire-repo/packages/haywire-core" },
     { name = "httpx", specifier = ">=0.27" },
-    { name = "numpy" },
-    { name = "pillow" },
+    { name = "numpy", specifier = ">=1.26" },
+    { name = "pillow", specifier = ">=12.0" },
     { name = "websockets", specifier = ">=13" },
 ]
 
@@ -608,30 +608,28 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "pytest", specifier = ">=8" },
-    { name = "pytest-timeout" },
+    { name = "pytest-timeout", specifier = ">=2.0" },
     { name = "ruff", specifier = "==0.12.12" },
 ]
 
 [[package]]
 name = "haybale-core"
-version = "0.6.0"
+version = "0.6.3"
 source = { editable = "../haywire-repo/barn/haybale-core" }
 dependencies = [
     { name = "haywire-core" },
     { name = "nicegui" },
-    { name = "typing-extensions" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "haywire-core", editable = "../haywire-repo/packages/haywire-core" },
     { name = "nicegui", specifier = ">=3.18.0" },
-    { name = "typing-extensions" },
 ]
 
 [[package]]
 name = "haybale-graph-editor"
-version = "0.6.0"
+version = "0.6.3"
 source = { editable = "../haywire-repo/barn/haybale-graph-editor" }
 dependencies = [
     { name = "haywire-core" },
@@ -646,7 +644,7 @@ requires-dist = [
 
 [[package]]
 name = "haybale-haystack"
-version = "0.6.0"
+version = "0.6.3"
 source = { editable = "../haywire-repo/barn/haybale-haystack" }
 dependencies = [
     { name = "haybale-graph-editor" },
@@ -667,7 +665,7 @@ requires-dist = [
 
 [[package]]
 name = "haybale-image"
-version = "0.6.0"
+version = "0.6.3"
 source = { editable = "../haywire-repo/barn/haybale-image" }
 dependencies = [
     { name = "fastapi" },
@@ -676,25 +674,23 @@ dependencies = [
     { name = "numpy" },
     { name = "opencv-contrib-python" },
     { name = "pillow" },
-    { name = "typing-extensions" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "fastapi" },
+    { name = "fastapi", specifier = ">=0.109.1" },
     { name = "haywire-core", editable = "../haywire-repo/packages/haywire-core" },
     { name = "nicegui", specifier = ">=3.18.0" },
-    { name = "numpy" },
-    { name = "opencv-contrib-python", specifier = ">=5.0.0.93" },
+    { name = "numpy", specifier = ">=1.26" },
+    { name = "opencv-contrib-python", specifier = ">=4.13.0.90" },
     { name = "pillow", specifier = ">=12.0" },
-    { name = "torch", marker = "extra == 'torch'" },
-    { name = "typing-extensions" },
+    { name = "torch", marker = "extra == 'torch'", specifier = ">=2.2" },
 ]
 provides-extras = ["torch"]
 
 [[package]]
 name = "haybale-marketplace"
-version = "0.6.0"
+version = "0.6.3"
 source = { editable = "../haywire-repo/barn/haybale-marketplace" }
 dependencies = [
     { name = "haybale-studio" },
@@ -708,12 +704,12 @@ requires-dist = [
     { name = "haybale-studio", editable = "../haywire-repo/barn/haybale-studio" },
     { name = "haywire-core", editable = "../haywire-repo/packages/haywire-core" },
     { name = "nicegui", specifier = ">=3.18.0" },
-    { name = "packaging" },
+    { name = "packaging", specifier = ">=23.2" },
 ]
 
 [[package]]
 name = "haybale-studio"
-version = "0.6.0"
+version = "0.6.3"
 source = { editable = "../haywire-repo/barn/haybale-studio" }
 dependencies = [
     { name = "haywire-core" },
@@ -730,10 +726,9 @@ requires-dist = [
 
 [[package]]
 name = "haywire-core"
-version = "0.6.0"
+version = "0.6.3"
 source = { editable = "../haywire-repo/packages/haywire-core" }
 dependencies = [
-    { name = "attrs" },
     { name = "cattrs" },
     { name = "fastapi" },
     { name = "injector" },
@@ -749,28 +744,29 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "attrs", specifier = "==25.4.0" },
-    { name = "cattrs", specifier = "==25.3.0" },
-    { name = "fastapi" },
+    { name = "cattrs", specifier = ">=23.2" },
+    { name = "fastapi", specifier = ">=0.109.1" },
     { name = "injector", specifier = ">=0.22.0" },
     { name = "markdown2", specifier = ">=2.5" },
     { name = "nicegui", specifier = ">=3.18.0" },
-    { name = "packaging" },
+    { name = "packaging", specifier = ">=23.2" },
     { name = "pygments", specifier = ">=2.18" },
     { name = "toml", specifier = ">=0.10.2" },
     { name = "tomlkit", specifier = ">=0.13" },
-    { name = "typing-extensions" },
-    { name = "watchdog", specifier = ">=6.0.0" },
+    { name = "typing-extensions", specifier = ">=4.6" },
+    { name = "watchdog", specifier = ">=4.0" },
 ]
 
 [[package]]
 name = "haywire-studio"
-version = "0.6.0"
+version = "0.6.3"
 source = { editable = "../haywire-repo/packages/haywire-studio" }
 dependencies = [
+    { name = "anyio" },
     { name = "cryptography" },
     { name = "fastapi" },
     { name = "haywire-core" },
+    { name = "httpx" },
     { name = "jedi" },
     { name = "mcp" },
     { name = "nicegui" },
@@ -780,13 +776,15 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "anyio", specifier = ">=4.5" },
     { name = "cryptography", specifier = ">=42" },
-    { name = "fastapi" },
+    { name = "fastapi", specifier = ">=0.109.1" },
     { name = "haywire-core", editable = "../haywire-repo/packages/haywire-core" },
+    { name = "httpx", specifier = ">=0.27.1" },
     { name = "jedi", specifier = ">=0.19" },
     { name = "mcp", specifier = ">=1.28,<2" },
     { name = "nicegui", specifier = ">=3.18.0" },
-    { name = "psutil" },
+    { name = "psutil", specifier = ">=5.9.6" },
     { name = "toml", specifier = ">=0.10.2" },
 ]
 
