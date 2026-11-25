@@ -18,8 +18,8 @@ dependencies = [
     "haybale-image>=0.6.0",
     "httpx>=0.27",
     "websockets>=13",
-    "numpy",
-    "pillow",
+    "numpy>=1.26",  # haybale-image's floor: the frames go to its image types
+    "pillow>=12.0",  # haybale-image's floor, for the same reason
 ]
 
 # The key is the entry-point name (unique within the group; need not match the
